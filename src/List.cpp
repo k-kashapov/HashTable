@@ -171,7 +171,7 @@ long ListInsertPhys (List *lst, type_t value, long place)
 long ListPushBack (List *lst, type_t value)
 {
     LIST_OK();
-    
+
     if (lst->free < 1)
     {
         ListResize (lst, lst->capacity * 2);
@@ -494,7 +494,6 @@ int ListDtor (void *lst_void)
     List *lst = (List *) lst_void;
 
     LIST_OK();
-    LOG_PRINT ("<em style = \"color : #16c95e\">List destructed</em>\n");
 
     #ifdef LIST_LOGS
         CloseLogFile ();
@@ -572,13 +571,13 @@ int ListDtor (void *lst_void)
                                                 "shape=record, style = \"rounded,filled\", "
                                                 "fillcolor=\"%s\", "
                                                 "label = \""
-                                                "Data = %ld|"
+                                                "Data = |"
                                                 "<pos>Position = %ld| "
                                                 "{ <pr>Prev = %ld|"
                                                 "<nx>Next = %ld }\""
                                             "]\n",
                                             pos, node.prev == -1 ? "pink" : "lightblue",
-                                            node.data, pos, node.prev, node.next);
+                                            pos, node.prev, node.next);
         return printed;
     }
 
@@ -657,7 +656,6 @@ int ListDtor (void *lst_void)
 
                 for (long data_iter = 0; data_iter < lst->capacity; data_iter++)
                 {
-                    fprintf (Log_file, "<td>%4ld</td>", lst->nodes[data_iter].data);
                     if (data_iter > 0 && lst->nodes[data_iter].prev >= 0)
                     {
                         fprintf (Graph_file,    "NODE%ld:<nx>->NODE%ld:"

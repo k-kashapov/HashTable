@@ -5,11 +5,11 @@ static const int  POISON       = 0x42;
 
 int CreateTable (Hash_t *target_table)
 {
-    TableElem *TableData = (TableElem *) calloc (InitTableCap, sizeof (TableElem));
-    
+    void **TableData = (void **) calloc (InitTableCap, sizeof (void **));
+
     if (!TableData)
     {
-        TABLE_ERR ("Unable to allocate memory of size: %d", 
+        TABLE_ERR ("Unable to allocate memory of size: %d",
                     InitTableCap);
 
         return MEM_ALLOC_ERR;
@@ -19,10 +19,17 @@ int CreateTable (Hash_t *target_table)
     target_table->size     = 0;
     target_table->capacity = InitTableCap;
 
+    for (int elem = 0; elem < InitTableCap; elem++)
+    {
+        List *new_list = (List *) calloc (1, sizeof (List));
+        ListInit (new_list, 2);
+        target_table->Data[elem] = new_list;
+    }
+
     return 0;
 }
 
-int64_t SimpleHash (const void *data_ptr, int len)
+int64_t SumHash (const void *data_ptr, int len)
 {
     int64_t hash = 0;
 
@@ -39,25 +46,30 @@ int64_t SimpleHash (const void *data_ptr, int len)
 // Relies highly on table capacity being a
 // power of 2, so avoid changing it
 
-int TableInsert (Hash_t *target_table, const void *value, const void *key, int key_len)
+int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const void *key, int len))
 {
-    int64_t key_hash      = SimpleHash (key, key_len);
+    int64_t key_hash      = UserHash (value.key, value.key_len);
     int64_t capacity_mask = target_table->capacity - 1;
 
-    void *target_list = target_table->Data[key_hash % capacity_mask].Data;
+    List *target_list = (List *) target_table->Data[key_hash % capacity_mask];
 
-    if (!target_list)
+    if (target_list->size == 0)
     {
-        List *new_list = (List *) calloc (1, sizeof (List));
-        ListInit (new_list, 2);
-        target_list = (void *) new_list;
+        target_table->size++;
     }
-    
-    type_t inserting = { key, value, key_len };
 
-    ListPushBack ((List *) target_list, inserting);
+    ListPushBack (target_list, value);
 
     return 0;
+}
+
+void *GetElemByHash (Hash_t *target_table, int64_t hash)
+{
+    int64_t capacity_mask = target_table->capacity - 1;
+
+    void *target_elem = target_table->Data[hash % capacity_mask];
+
+    return target_elem;
 }
 
 int DestrTable (Hash_t *target_table, int (*elemDtor) (void *))
@@ -66,12 +78,13 @@ int DestrTable (Hash_t *target_table, int (*elemDtor) (void *))
 
     for (int elem = 0; elem < target_table->capacity; elem++)
     {
-        if (elem < target_table->size)
-            elemDtor (target_table->Data[elem].Data);
+        void *table_elem = target_table->Data[elem];
 
-        free (target_table->Data[elem].Data);
+        elemDtor (table_elem);
 
-        target_table->Data[elem].Data = NULL;
+        free (table_elem);
+
+        table_elem = NULL;
     }
 
     target_table->size     = 0;

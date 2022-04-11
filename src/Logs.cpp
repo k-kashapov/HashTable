@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include "Logs.h"
 
 int LogErr (FILE *errFile, const char *format, const char *func, int line, ...)
 {

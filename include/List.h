@@ -1,15 +1,18 @@
-#pragma once
+#ifndef LIST_H
+#define LIST_H
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "Logs.h"
+
 struct type_t
 {
-    const void *key;
     const void *Data;
-    int  key_len;
+    const void *key;
+    int        key_len;
 };
 
 #define _type_name "int64_t"
@@ -146,3 +149,5 @@ int64_t ListResize (List *lst, long new_capacity);
 int ListDtor (void *lst_void);
 
 int64_t ListDump (List *lst, int64_t err, const char *called_from);
+
+#endif
