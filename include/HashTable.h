@@ -8,7 +8,7 @@ struct TableElem
 
 struct Hash_t
 {
-    TableElem *data;
+    TableElem *Data;
     int       size;
     int       capacity;
 };
@@ -24,3 +24,7 @@ struct Hash_t
 int LogErr (FILE *errFile, const char *format, const char *func, int line, ...);
 
 int CreateTable (Hash_t *target_table);
+
+int TableInsert (Hash_t *target_table, const void *value, const void *key, int key_len);
+
+int DestrTable (Hash_t *target_table, int (*elemDtor) (void *));

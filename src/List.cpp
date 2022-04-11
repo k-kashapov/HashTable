@@ -24,7 +24,7 @@ int64_t ListInit (List *lst, long init_size)
 
     for (long elem = 0; elem < init_size; elem++)
     {
-        lst->nodes[elem].data = 0;
+        lst->nodes[elem].data = {};
         lst->nodes[elem].next = (elem + 1) % init_size;
         lst->nodes[elem].prev = -1;
     }
@@ -102,7 +102,7 @@ long ListLinearize (List *lst)
         lst->nodes[elem].prev = elem - 1;
     }
 
-    lst->nodes[0].data         = 0;
+    lst->nodes[0].data         = {};
     lst->nodes[0].next         = 0;
     lst->nodes[0].prev         = 0;
     lst->nodes[lst->size].next = 0;
@@ -250,7 +250,7 @@ type_t ListPopBack (List *lst, int *pop_err)
     {
         LOG_ERROR (ZERO ELEMENT POP\n);
         if (pop_err) *pop_err = POP_FIND_ERR;
-        return POP_FIND_ERR;
+        return {};
     }
 
     if (lst->tail == lst->head)
@@ -259,7 +259,7 @@ type_t ListPopBack (List *lst, int *pop_err)
         lst->nodes[lst->tail].next = lst->free;
         lst->free                  = lst->tail;
         lst->nodes[lst->tail].prev = -1;
-        lst->nodes[lst->tail].data = 0;
+        lst->nodes[lst->tail].data = {};
         lst->tail                  = 0;
         lst->head                  = 0;
         lst->size--;
@@ -272,7 +272,7 @@ type_t ListPopBack (List *lst, int *pop_err)
     {
         LOG_ERROR (NO ELEMENT FOUND: expected next = %ld</em>\n, , lst->tail);
         if (pop_err) *pop_err = POP_FIND_ERR;
-        return POP_FIND_ERR;
+        return {};
     }
 
     type_t tmp                 = lst->nodes[lst->tail].data;
@@ -280,7 +280,7 @@ type_t ListPopBack (List *lst, int *pop_err)
     lst->nodes[lst->tail].next = lst->free;
     lst->free                  = lst->tail;
     lst->nodes[lst->tail].prev = -1;
-    lst->nodes[lst->tail].data = 0;
+    lst->nodes[lst->tail].data = {};
     lst->tail                  = prev;
     lst->size--;
 
@@ -302,7 +302,7 @@ type_t ListPopFront (List *lst, int *pop_err)
     {
         LOG_ERROR (ZERO ELEMENT POP\n);
         if (pop_err) *pop_err = POP_FIND_ERR;
-        return POP_FIND_ERR;
+        return {};
     }
 
     if (lst->tail == lst->head)
@@ -311,7 +311,7 @@ type_t ListPopFront (List *lst, int *pop_err)
         lst->nodes[lst->tail].next = lst->free;
         lst->free                  = lst->tail;
         lst->nodes[lst->tail].prev = -1;
-        lst->nodes[lst->tail].data = 0;
+        lst->nodes[lst->tail].data = {};
         lst->tail                  = 0;
         lst->head                  = 0;
         lst->size--;
@@ -322,7 +322,7 @@ type_t ListPopFront (List *lst, int *pop_err)
     long next = lst->nodes[lst->head].next;
 
     type_t tmp                 = lst->nodes[lst->head].data;
-    lst->nodes[lst->head].data = 0;
+    lst->nodes[lst->head].data = {};
     lst->nodes[lst->head].next = lst->free;
     lst->free                  = lst->head;
     lst->nodes[lst->head].prev = -1;
@@ -346,7 +346,7 @@ type_t ListPopPhys (List *lst, long place, int *pop_err)
     {
         LOG_ERROR (ZERO ELEMENT POP\n);
         if (pop_err) *pop_err = POP_FIND_ERR;
-        return POP_FIND_ERR;
+        return {};
     }
 
     if (place == lst->head)
@@ -364,7 +364,7 @@ type_t ListPopPhys (List *lst, long place, int *pop_err)
     {
         LOG_ERROR (NO ELEMENT FOUND: expected next = %ld</em>\n, , lst->tail);
         if (pop_err) *pop_err = POP_FIND_ERR;
-            return POP_FIND_ERR;
+            return {};
     }
 
     type_t tmp = lst->nodes[place].data;
@@ -374,7 +374,7 @@ type_t ListPopPhys (List *lst, long place, int *pop_err)
     lst->nodes[place].next                  = lst->free;
     lst->free                               = place;
     lst->nodes[place].prev                  = -1;
-    lst->nodes[place].data                  = 0;
+    lst->nodes[place].data                  = {};
     lst->linear                             = 0;
     lst->size--;
 
@@ -472,12 +472,12 @@ int64_t ListResize (List *lst, long new_capacity)
 
     for (long iter = lst->capacity; iter < new_capacity - 1; iter++)
     {
-        lst->nodes[iter].data = 0;
+        lst->nodes[iter].data = {};
         lst->nodes[iter].next = iter + 1;
         lst->nodes[iter].prev = -1;
     }
 
-    lst->nodes[new_capacity - 1].data = 0;
+    lst->nodes[new_capacity - 1].data = {};
     lst->nodes[new_capacity - 1].next = 0;
     lst->nodes[new_capacity - 1].prev = -1;
     lst->free = lst->size + 1;
@@ -489,8 +489,10 @@ int64_t ListResize (List *lst, long new_capacity)
     return OK;
 }
 
-int64_t ListDtor (List *lst)
+int ListDtor (void *lst_void)
 {
+    List *lst = (List *) lst_void;
+
     LIST_OK();
     LOG_PRINT ("<em style = \"color : #16c95e\">List destructed</em>\n");
 

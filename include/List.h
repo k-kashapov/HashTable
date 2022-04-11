@@ -5,7 +5,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-typedef int64_t type_t;
+struct type_t
+{
+    const void *key;
+    const void *Data;
+    int  key_len;
+};
+
 #define _type_name "int64_t"
 
 const long LIST_INIT_CAP = 2;
@@ -28,7 +34,9 @@ enum LIST_STATES
 #undef LST_ERR
 
 #ifdef LIST_LOGS
-    #define LOG_PRINT(string) fprintf (Log_file, string)
+    #define LOG_PRINT(string) fprintf (Log_file, string);                       \
+    fflush (Log_file);
+    
     #define HLINE(width, height)    "<div><style scoped>"                       \
                                         "hr#w" #width                           \
                                         "{"                                     \
@@ -93,6 +101,7 @@ enum LIST_STATES
 struct Node
 {
     type_t data;
+    
     long next;
     long prev;
 };
@@ -108,7 +117,7 @@ struct List
     char linear;
 };
 
-int64_t ListInit (List *lst, long init_size = 0);
+int64_t ListInit (List *lst, long init_size = 1);
 
 long LogicalToPhysicalAddr (List *lst, long num);
 
@@ -134,6 +143,6 @@ int64_t ListOK (List *lst);
 
 int64_t ListResize (List *lst, long new_capacity);
 
-int64_t ListDtor (List *lst);
+int ListDtor (void *lst_void);
 
 int64_t ListDump (List *lst, int64_t err, const char *called_from);
