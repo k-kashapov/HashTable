@@ -1,8 +1,11 @@
 #include "HashTable.h"
+#include "files.h"
 
 int main (int argc, const char **argv)
 {
+    file_info src = {};
     
+    int read = read_all_words (&src, "Silmarillion.txt");
 
     Hash_t table = {};
 
@@ -18,6 +21,8 @@ int main (int argc, const char **argv)
     }
 
     DestrTable (&table, ListDtor);
+
+    free_info (&src);
 
     return 0;
 }

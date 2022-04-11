@@ -9,7 +9,7 @@
 /// <summary>
 /// Максимальное количество строк, которые можно прочиать из файла
 /// </summary>
-const int BUFF_SIZE = 5000;
+const int WORD_WIDTH = 4;
 
 const int READ_TEXT_FAILED = -1;
 
@@ -47,7 +47,7 @@ struct config
 struct file_info
 {
     char *text;
-    string **strs;
+    string *strs;
     int  lines_num;
 };
 
@@ -59,6 +59,8 @@ struct file_info
  * \return              Количество прочитанных строк
  */
 int read_all_words (file_info *info, const char *file_name);
+
+int CountWords (const char *text);
 
 int open_file (FILE **ptr, const char* file_name, const char* mode);
 

@@ -24,38 +24,65 @@ int read_all_words (file_info *info, const char* file_name)
 
     fclose (source);
 
-    string **strings = (string **) calloc (BUFF_SIZE + 1, sizeof (string *));
+    int words_num = CountWords (text_buff);
+
+    string *strings = (string *) calloc (words_num, sizeof (string));
     assert (strings);
 
-    for (int i = 0; i < BUFF_SIZE + 1; i++)
+    string *strings_ptr = strings;
+    
+    for (char *token = strtok (text_buff, " \n,.:\r"); token;
+         token = strtok (NULL, " \n,.:\r"))
     {
-        strings [i] = (string *) calloc (1, sizeof (string));
-        assert (strings [i]);
-    }
-
-    string **strings_ptr = strings;
-
-    for (char *token = strtok (text_buff, " \n,.:\r"); token; 
-               token = strtok (NULL, " \n,.:\r"))
-    {
-        if (!isspace (*token)) 
+        fflush (stdout);
+        
+        if (*token != '\n')
         {           
-            while (isspace (*token)) token++;
+            while (!isalpha (*token)) token++;
             
             char *token_ptr = token;
 
-            while (!isspace (*token_ptr) && *token_ptr) token_ptr++;
+            while (isalpha (*token_ptr) && *token_ptr) token_ptr++;
 
-            (*strings_ptr)->len = token_ptr - token;
-            (*strings_ptr++)->text = token;
+            fflush (stdout);
+
+            strings_ptr->len = token_ptr - token;
+            (strings_ptr++)->text = token;
+
+            fflush (stdout);
         } 
     } 
     
-    info->text = text_buff;
-    info->strs = strings;
+    fflush (stdout);
+    
+    info->text      = text_buff;
+    info->strs      = strings;
     info->lines_num = strings_ptr - strings;
     
     return 0;
+}
+
+int CountWords (const char *text)
+{
+    int words_num = 0;
+    
+    for (int wordLen = 0; *text != '\0'; text++)
+    {
+        if (!isalpha (*text) && wordLen > 0)
+        {
+            wordLen = 0;
+            continue;
+        }
+    
+        if (isalpha (*text) && wordLen == 0)
+        {
+            words_num++;
+        }
+        
+        wordLen += isalpha (*text);
+    }
+
+    return words_num;
 }
 
 int open_file (FILE **ptr, const char* file_name, const char* mode)
@@ -103,27 +130,6 @@ int get_len (FILE *file)
     fseek (file, 0, SEEK_SET);
 
     return length;
-}
-
-int show_res (file_info *file_text, const char * output_file)
-{
-    assert (file_text);
-    
-    FILE *destination = NULL;
-    open_file (&destination, output_file, "wt");
-
-    for (int i = 0; i < file_text->lines_num; i++)
-    {
-        char printed = fputs ((*(file_text->strs + i))->text, destination);
-        if (printed == EOF || fputs ("\n", destination) == EOF)
-        {
-            printf ("ERROR: Writing to file failed!");
-            free_info (file_text);
-            return (WRITING_TEXT_FAILED);
-        }
-    }
-    fclose (destination);
-    return 0;
 }
 
 void free_info (file_info *info)
