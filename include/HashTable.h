@@ -15,4 +15,6 @@ int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const 
 
 void *GetElemByHash (Hash_t *target_table, int64_t hash);
 
+type_t TableFind (Hash_t *target_table, const void *key, int key_len, int64_t (* UserHash) (const void *, int));
+
 int DestrTable (Hash_t *target_table, int (*elemDtor) (void *));

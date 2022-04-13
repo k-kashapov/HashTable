@@ -15,6 +15,7 @@ struct type_t
     const void *Data;
     const void *key;
     int        key_len;
+    int        key_rep; // Number of repetitions of key in hash table
 };
 
 #define _type_name "int64_t"
@@ -106,7 +107,6 @@ enum LIST_STATES
 struct Node
 {
     type_t data;
-    
     long next;
     long prev;
 };
