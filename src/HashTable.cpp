@@ -1,10 +1,33 @@
 #include "HashTable.h"
+#include "string.h"
 
-static const int  InitTableCap = 8;
-static const int  POISON       = 0x42;
+#ifdef TABLE_LOGS
+    static FILE *LogFile = NULL
+    #define TABLE_MSG(msg, ...) LogMsg (LogFile, 1, msg, __FUNCTION__, __LINE__, __VA_ARGS__);
+#else
+    #define LogFile stderr
+    #define TABLE_MSG(msg, ...) ;
+#endif
 
-int CreateTable (Hash_t *target_table)
+#define TABLE_ERR(msg, ...) LogMsg (LogFile, 1, msg, __FUNCTION__, __LINE__, __VA_ARGS__);
+
+int CeilPowerOfTwo (int value)
 {
+    int res = 1;
+    while (value)
+    {
+        res   <<= 1;
+        value >>= 1;
+    }
+
+    return res;
+}
+
+int CreateTable (Hash_t *target_table, int InitTableCap)
+{
+    if (InitTableCap < 2) InitTableCap = 2;
+    else InitTableCap = CeilPowerOfTwo (InitTableCap);
+
     void **TableData = (void **) calloc (InitTableCap, sizeof (void **));
 
     if (!TableData)
@@ -29,20 +52,6 @@ int CreateTable (Hash_t *target_table)
     return 0;
 }
 
-int64_t SumHash (const void *data_ptr, int len)
-{
-    int64_t hash = 0;
-
-    const char *data = (const char *) data_ptr;
-
-    for (int byte = 0; byte < len; byte++)
-    {
-        hash += data[byte];
-    }
-
-    return hash;
-}
-
 // Relies highly on table capacity being a
 // power of 2, so avoid changing it
 
@@ -51,14 +60,25 @@ int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const 
     int64_t key_hash      = UserHash (value.key, value.key_len);
     int64_t capacity_mask = target_table->capacity - 1;
 
-    List *target_list = (List *) target_table->Data[key_hash % capacity_mask];
+    List *target_list = (List *) target_table->Data[key_hash & capacity_mask];
 
-    if (target_list->size == 0)
+    // Compare each element of list with the key we're looking for
+    // If found, do nothing
+
+    for (Node list_elem = GET_LIST_NODE (target_list, target_list->head);
+         list_elem.next != 0;
+         list_elem = GET_LIST_NODE (target_list, list_elem.next))
     {
-        target_table->size++;
+        if (!strncmp ((const char *) list_elem.data.key,
+                      (const char *) value.key,
+                      value.key_len))
+        {
+            return 0;
+        }
     }
 
     ListPushBack (target_list, value);
+    target_table->size++;
 
     return 0;
 }
@@ -67,7 +87,7 @@ void *GetElemByHash (Hash_t *target_table, int64_t hash)
 {
     int64_t capacity_mask = target_table->capacity - 1;
 
-    void *target_elem = target_table->Data[hash % capacity_mask];
+    void *target_elem = target_table->Data[hash & capacity_mask];
 
     return target_elem;
 }

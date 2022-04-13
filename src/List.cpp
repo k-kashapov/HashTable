@@ -54,6 +54,7 @@ long LogicalToPhysicalAddr (List *lst, long num)
     long elem  = lst->head;
     long steps = 1;
     for (; steps < num; elem = lst->nodes[elem].next, steps++) ;
+
     return elem;
 }
 

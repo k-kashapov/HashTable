@@ -4,7 +4,7 @@ listTargets   = src/List.cpp
 
 filesTargets  = src/files.cpp
 
-objs          = obj/list.o obj/logs.o obj/files.o
+objs          = obj/list.o obj/logs.o obj/files.o obj/hashing.o
 
 tableTargets  = table.cpp src/HashTable.cpp $(objs)
 
@@ -26,6 +26,9 @@ obj/logs.o:	src/Logs.cpp
 
 obj/files.o: $(filesTargets)
 			 g++ $(filesTargets) $(basicFlags) -o obj/files.o -c
+
+obj/hashing.o: src/Hashing.cpp
+			   g++ src/Hashing.cpp $(basicFlags) -o obj/hashing.o -c
 
 #================== <MISC> ====================
 cleanup: 

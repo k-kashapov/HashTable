@@ -10,9 +10,10 @@ int read_all_words (file_info *info, const char* file_name)
     assert (file_name);
 
     FILE *source = NULL;
+    
     if (open_file (&source, file_name, "rt"))
     {
-        return OPEN_FILE_FAILED;
+        return 0;
     }
 
     char *text_buff = read_to_end (source);
@@ -33,9 +34,7 @@ int read_all_words (file_info *info, const char* file_name)
     
     for (char *token = strtok (text_buff, " \n,.:\r"); token;
          token = strtok (NULL, " \n,.:\r"))
-    {
-        fflush (stdout);
-        
+    {   
         if (*token != '\n')
         {           
             while (!isalpha (*token)) token++;
@@ -44,22 +43,16 @@ int read_all_words (file_info *info, const char* file_name)
 
             while (isalpha (*token_ptr) && *token_ptr) token_ptr++;
 
-            fflush (stdout);
-
             strings_ptr->len = token_ptr - token;
             (strings_ptr++)->text = token;
-
-            fflush (stdout);
         } 
-    } 
-    
-    fflush (stdout);
+    }
     
     info->text      = text_buff;
     info->strs      = strings;
-    info->lines_num = strings_ptr - strings;
+    info->elems_num = strings_ptr - strings;
     
-    return 0;
+    return info->elems_num;
 }
 
 int CountWords (const char *text)
@@ -68,18 +61,16 @@ int CountWords (const char *text)
     
     for (int wordLen = 0; *text != '\0'; text++)
     {
-        if (!isalpha (*text) && wordLen > 0)
+        if (isalpha (*text))
+        {
+            if (!wordLen) words_num++;
+            
+            wordLen++;
+        }
+        else
         {
             wordLen = 0;
-            continue;
         }
-    
-        if (isalpha (*text) && wordLen == 0)
-        {
-            words_num++;
-        }
-        
-        wordLen += isalpha (*text);
     }
 
     return words_num;
@@ -88,10 +79,11 @@ int CountWords (const char *text)
 int open_file (FILE **ptr, const char* file_name, const char* mode)
 {
     *ptr = fopen (file_name, mode);
-    if (!ptr)
+    
+    if (!*ptr)
     {
         printf ("ERROR: Couldn't open file \"%s\"\n", file_name);
-        return (OPEN_FILE_FAILED);
+        return OPEN_FILE_FAILED;
     }
 
     return 0;
@@ -140,30 +132,32 @@ void free_info (file_info *info)
     free (info->strs);
 }
 
-void get_params (int argc, char **argv, config *current)
+void get_params (int argc, const char **argv, config *current)
 {
     assert (argv);
     assert (current);
-    
+
     while (--argc)
     {
-        char* arg = *++argv;
-        if (!strncmp (arg, "-n", 2))
+        const char* arg = *++argv;
+        if (!strncmp (arg, "-i", 3))
         {
             current->input_file = *++argv;
             argc--;
         }
-        else 
+        else if (!strncmp (arg, "-o", 3))
         {
-            if (!strncmp (arg, "-o", 2))
-            {
-                current->output_file = *++argv;
-                argc--;
-            }
-            else 
-            {
-                printf ("Invalid paramter: %s\n", *argv);
-            }
+            current->output_file = *++argv;
+            argc--;
+        }
+        else if (!strncmp (arg, "-l", 3))
+        {
+            current->table_len = atoi (*++argv);
+            argc--;
+        }
+        else
+        {
+            printf ("Invalid paramter: %s\n", *argv);
         }
     }
 }

@@ -2,16 +2,16 @@
 #include <stdarg.h>
 #include "Logs.h"
 
-int LogErr (FILE *errFile, const char *format, const char *func, int line, ...)
+int LogMsg (FILE *logFile, char isErr, const char *format, const char *func, int line, ...)
 {
-    fprintf (errFile, "ERROR: at \"%s\" (%d):\n",func, line);
+    fprintf (logFile, "%s: at \"%s\" (%d):\n", isErr ? "ERROR" : "Msg" , func, line);
 
-    va_list errArgs;
-    va_start (errArgs, format);
+    va_list logArgs;
+    va_start (logArgs, format);
 
-    vprintf (format, errArgs);
+    vfprintf (logFile, format, logArgs);
 
-    va_end (errArgs);
+    va_end (logArgs);
 
     return 0;
 }

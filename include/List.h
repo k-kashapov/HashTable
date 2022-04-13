@@ -7,6 +7,8 @@
 #include <stdarg.h>
 
 #include "Logs.h"
+#define GET_LIST_NODE(lst, idx) ((*lst).nodes[idx])
+#define GET_LIST_DATA(lst, idx) ((*lst).nodes[idx].data)
 
 struct type_t
 {

@@ -33,8 +33,9 @@ struct string
  */
 struct config
 {
-    const char *input_file = "source.txt";
+    const char *input_file  = "source.txt";
     const char *output_file = "result.txt";
+    int        table_len    = 8;
 };
 
 /**
@@ -46,9 +47,9 @@ struct config
  */
 struct file_info
 {
-    char *text;
+    char   *text;
     string *strs;
-    int  lines_num;
+    int    elems_num;
 };
 
 /**
@@ -102,4 +103,4 @@ void free_info (file_info *info);
  * \param argv    Массив аргументов
  * \param current Структура, хранящая имена файлов
  */
-void get_params (int argc, char **argv, config *current);
+void get_params (int argc, const char **argv, config *current);

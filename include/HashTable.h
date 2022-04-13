@@ -7,17 +7,9 @@ struct Hash_t
     int  capacity;
 };
 
-#ifndef TABLE_LOGS
-    #define ErrFile stderr
-#else
-    static FILE *ErrFile = NULL
-#endif
+int CeilPowerOfTwo (int value);
 
-#define TABLE_ERR(msg, ...) LogErr (ErrFile, msg, __FUNCTION__, __LINE__, __VA_ARGS__);
-
-int64_t SumHash (const void *data_ptr, int len);
-
-int CreateTable (Hash_t *target_table);
+int CreateTable (Hash_t *target_table, int InitTableCap);
 
 int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const void *key, int len));
 
