@@ -1,24 +1,15 @@
 #include "HashTable.h"
 #include "string.h"
 
-#ifdef TABLE_LOGS
-    static FILE *LogFile = NULL
-    #define TABLE_MSG(msg, ...) LogMsg (LogFile, 1, msg, __FUNCTION__, __LINE__, __VA_ARGS__);
-#else
-    #define LogFile stderr
-    #define TABLE_MSG(msg, ...) ;
-#endif
-
-#define TABLE_ERR(msg, ...) LogMsg (LogFile, 1, msg, __FUNCTION__, __LINE__, __VA_ARGS__);
-
 int CeilPowerOfTwo (int value)
 {
     int res = 1;
-    do
+
+    while (value - 1)
     {
         res   <<= 1;
         value >>= 1;
-    } while (value - 1);
+    }
 
     return res;
 }
@@ -28,7 +19,7 @@ int CreateTable (Hash_t *target_table, int InitTableCap)
     if (InitTableCap < 2) InitTableCap = 2;
     else InitTableCap = CeilPowerOfTwo (InitTableCap);
 
-    void **TableData = (void **) calloc (InitTableCap, sizeof (void **));
+    void **TableData = (void **) calloc ((size_t) InitTableCap, sizeof (void **));
 
     if (!TableData)
     {
@@ -49,6 +40,20 @@ int CreateTable (Hash_t *target_table, int InitTableCap)
         target_table->Data[elem] = new_list;
     }
 
+    #ifdef LOGGING
+
+    if (!LogFile)
+    {
+        fprintf (stderr, "ERROR: could not open Log File: |%s|!\n", LogPath);
+        return OPEN_FILE_FAIL;
+    }
+    else
+    {
+        TABLE_MSG ("Table Created at <%p>", target_table);
+    }
+
+    #endif
+
     return 0;
 }
 
@@ -57,20 +62,31 @@ int CreateTable (Hash_t *target_table, int InitTableCap)
 
 int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const void *key, int len))
 {
+    TABLE_MSG ("Adding element: |%.*s| of len = (%d)", 
+                value.key_len, value.key, value.key_len);
+
     List *target_list = (List *) GetElemByHash (target_table, UserHash (value.key, value.key_len));
 
     // Compare each element of list with the key we're looking for
     // If found, increment this element's counter and don't push
 
-    for (Node list_elem = GET_LIST_NODE (target_list, target_list->head);
-         list_elem.next != 0;
-         list_elem = GET_LIST_NODE (target_list, list_elem.next))
+    for (Node *list_elem = target_list->nodes + target_list->head;
+         list_elem->next != 0;
+         list_elem = target_list->nodes + list_elem->next)
     {
-        if (!strncmp ((const char *) list_elem.data.key,
+        TABLE_MSG ("comparing list: |%.*s| (%d)\n"
+                    "with    value: |%.*s| (%d)\n",
+                    list_elem->data.key_len, list_elem->data.key, list_elem->data.key_len,
+                    value.key_len,           value.key,           value.key_len);
+
+        if (!strncmp ((const char *) list_elem->data.key,
                       (const char *) value.key,
-                      value.key_len))
+                      (size_t)       value.key_len))
         {
-            list_elem.data.key_rep += 1;
+            TABLE_MSG ("MATCHED new key_rep = (%d)!\n", list_elem->data.key_rep + 1);
+
+            list_elem->data.key_rep++;
+
             return 0;
         }
     }
@@ -94,16 +110,28 @@ void *GetElemByHash (Hash_t *target_table, int64_t hash)
 
 type_t TableFind (Hash_t *target_table, const void *key, int key_len, int64_t (* UserHash) (const void *, int))
 {
+    if (key_len < 1)
+    {
+        TABLE_ERR ("Invalid key len! Expected > 0, got: %d\n", key_len);
+        return {};
+    }
+
     List *target_list = (List *) GetElemByHash (target_table, UserHash (key, key_len));
 
-    for (Node curr_node = GET_LIST_NODE (target_list, target_list->head);
-         curr_node.next != 0;
-         curr_node = GET_LIST_NODE (target_list, curr_node.next))
+    if (target_list->size < 1) return GET_LIST_DATA (target_list, 0);
+
+    Node curr_node = GET_LIST_NODE (target_list, target_list->head);
+
+    do
     {
-        int wanted = !strncmp ((const char *) curr_node.data.key, (const char *) key, key_len);
+        int wanted = !strncmp ((const char *) curr_node.data.key,
+                               (const char *) key,
+                               (size_t) key_len);
 
         if (wanted) return curr_node.data;
-    }
+
+        curr_node = GET_LIST_NODE (target_list, curr_node.next);
+    } while (curr_node.next != 0);
 
     return GET_LIST_DATA (target_list, 0);
 }
@@ -111,6 +139,10 @@ type_t TableFind (Hash_t *target_table, const void *key, int key_len, int64_t (*
 int DestrTable (Hash_t *target_table, int (*elemDtor) (void *))
 {
     if (!target_table) return 0;
+
+    #ifdef TABLE_LOGS
+    if (LogFile) fclose (LogFile);
+    #endif
 
     for (int elem = 0; elem < target_table->capacity; elem++)
     {

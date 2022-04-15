@@ -3,6 +3,7 @@
  * \brief  В файле собраны все функции, связанные с работой с файловой системой
  *********************************************************************/
 #include "files.h"
+#include "Logs.h"
 
 int read_all_words (file_info *info, const char* file_name)
 {
@@ -10,7 +11,7 @@ int read_all_words (file_info *info, const char* file_name)
     assert (file_name);
 
     FILE *source = NULL;
-    
+
     if (open_file (&source, file_name, "rt"))
     {
         return 0;
@@ -31,40 +32,53 @@ int read_all_words (file_info *info, const char* file_name)
     assert (strings);
 
     string *strings_ptr = strings;
-    
+
+    LOG_MSG ("Tokenization of |%s| start!", file_name);
+
     for (char *token = strtok (text_buff, " \n,.:\r"); token;
          token = strtok (NULL, " \n,.:\r"))
-    {   
-        if (*token != '\n')
-        {           
-            while (!isalpha (*token)) token++;
-            
+    {
+        if (isalpha (*token))
+        {
+            LOG_MSG ("\nnew token = %.10s\n", token);
             char *token_ptr = token;
 
-            while (isalpha (*token_ptr) && *token_ptr) token_ptr++;
+            while (isalpha (*token_ptr) && *token_ptr)
+            {
+                LOG_MSG ("processing char: |%c|\n", *token_ptr);
+                token_ptr++;
+            }
+
+            LOG_MSG ("len = (%d), token_ptr = |%c|, token = |%c|\n",
+                     token_ptr - token, *token_ptr, *token);
 
             strings_ptr->len = token_ptr - token;
-            (strings_ptr++)->text = token;
-        } 
+            (strings_ptr)->text = token;
+
+            LOG_MSG ("result token = |%.*s| of len = (%d)\n\n",
+                     strings_ptr->len, token, strings_ptr->len);
+
+            strings_ptr++;
+        }
     }
-    
+
     info->text      = text_buff;
     info->strs      = strings;
     info->elems_num = strings_ptr - strings;
-    
+
     return info->elems_num;
 }
 
 int CountWords (const char *text)
 {
     int words_num = 0;
-    
+
     for (int wordLen = 0; *text != '\0'; text++)
     {
         if (isalpha (*text))
         {
             if (!wordLen) words_num++;
-            
+
             wordLen++;
         }
         else
@@ -79,7 +93,7 @@ int CountWords (const char *text)
 int open_file (FILE **ptr, const char* file_name, const char* mode)
 {
     *ptr = fopen (file_name, mode);
-    
+
     if (!*ptr)
     {
         printf ("ERROR: Couldn't open file \"%s\"\n", file_name);
@@ -89,17 +103,17 @@ int open_file (FILE **ptr, const char* file_name, const char* mode)
     return 0;
 }
 
-char* read_to_end (FILE *source) 
+char* read_to_end (FILE *source)
 {
     assert (source);
-    
+
     int length = get_len (source);
 
     char *text_buff = (char *) calloc ( length + 1, sizeof ( char ) );
     assert (text_buff);
 
     int sym_read = fread (text_buff, sizeof (*text_buff), length, source);
-    
+
     if (sym_read < 0 || sym_read > length)
     {
          free (text_buff);
@@ -109,7 +123,7 @@ char* read_to_end (FILE *source)
 
     // Останавливает дальнейшее чтение, т.к. дальше лежит мусор
     text_buff[sym_read] = '\0';
-    
+
     return text_buff;
 }
 
@@ -118,7 +132,7 @@ int get_len (FILE *file)
     assert (file);
 
     fseek (file, 0, SEEK_END);
-    int length = ftell (file); 
+    int length = ftell (file);
     fseek (file, 0, SEEK_SET);
 
     return length;

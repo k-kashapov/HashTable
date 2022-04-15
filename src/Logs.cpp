@@ -4,7 +4,11 @@
 
 int LogMsg (FILE *logFile, char isErr, const char *format, const char *func, int line, ...)
 {
-    fprintf (logFile, "%s: at \"%s\" (%d):\n", isErr ? "ERROR" : "Msg" , func, line);
+    fprintf (logFile, "___________________________________________\n\n");
+
+    fprintf (logFile, "%s: at \"%s\" (%d):\n",
+             isErr ? "ERROR" : "Msg",
+             func, line);
 
     va_list logArgs;
     va_start (logArgs, format);
@@ -12,6 +16,8 @@ int LogMsg (FILE *logFile, char isErr, const char *format, const char *func, int
     vfprintf (logFile, format, logArgs);
 
     va_end (logArgs);
+
+    fputc ('\n', logFile);
 
     return 0;
 }

@@ -19,7 +19,14 @@ int main (int argc, const char **argv)
 
     Hash_t table = {};
 
-    CreateTable (&table, io_config.table_len);
+    int created = CreateTable (&table, io_config.table_len);
+
+    if (created)
+    {
+        DestrTable (&table, ListDtor);
+        free_info (&src);
+        return created;
+    }
 
     type_t inserting = {};
 
@@ -28,7 +35,7 @@ int main (int argc, const char **argv)
         inserting.key     = src.strs[word].text;
         inserting.key_len = src.strs[word].len;
 
-        TableInsert (&table, inserting, RoLHash);
+        TableInsert (&table, inserting, FirstSymHash);
     }
 
     for (int i = 0; i < table.capacity; i++)
@@ -37,8 +44,16 @@ int main (int argc, const char **argv)
 
         type_t list_elem = GET_LIST_DATA (list, list->head);
 
-        printf ("%.*s; %ld\n", list_elem.key_len, (char *) list_elem.key, list->size);
+        printf ("%.*s; %ld; of size; %d\n",
+                list_elem.key_len, (const char *) list_elem.key, list->size, list_elem.key_len);
     }
+
+    type_t elem_found = TableFind (&table, "the", 3, FirstSymHash);
+
+    printf ("looking for: |%s|\n"
+            "found: |%s|\n"
+            "key rep = %d\n",
+            "the", (const char *) elem_found.key, elem_found.key_rep);
 
     DestrTable (&table, ListDtor);
 
