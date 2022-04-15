@@ -1,7 +1,8 @@
+#define LOG_NAME "HashTable"
 #include "List.h"
 
-#define TABLE_MSG(msg, ...) LOG_MSG ("HASH_TABLE: " msg, __VA_ARGS__);
-#define TABLE_ERR(msg, ...) LOG_ERR ("HASH_TABLE: " msg, __VA_ARGS__);
+#define TABLE_MSG(msg, ...) LOG_MSG ("HASH_TABLE:\n" msg, __VA_ARGS__);
+#define TABLE_ERR(msg, ...) LOG_ERR ("HASH_TABLE:\n" msg, __VA_ARGS__);
 
 struct Hash_t
 {

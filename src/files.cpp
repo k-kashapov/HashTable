@@ -3,7 +3,6 @@
  * \brief  В файле собраны все функции, связанные с работой с файловой системой
  *********************************************************************/
 #include "files.h"
-#include "Logs.h"
 
 int read_all_words (file_info *info, const char* file_name)
 {
@@ -35,12 +34,12 @@ int read_all_words (file_info *info, const char* file_name)
 
     LOG_MSG ("Tokenization of |%s| start!", file_name);
 
-    for (char *token = strtok (text_buff, " \n,.:\r"); token;
-         token = strtok (NULL, " \n,.:\r"))
+    for (char *token = text_buff; *token;
+         token++)
     {
         if (isalpha (*token))
         {
-            LOG_MSG ("\nnew token = %.10s\n", token);
+            LOG_MSG ("new token = %.10s\n", token);
             char *token_ptr = token;
 
             while (isalpha (*token_ptr) && *token_ptr)
@@ -55,10 +54,11 @@ int read_all_words (file_info *info, const char* file_name)
             strings_ptr->len = token_ptr - token;
             (strings_ptr)->text = token;
 
-            LOG_MSG ("result token = |%.*s| of len = (%d)\n\n",
+            LOG_MSG ("result token = |%.*s| of len = (%d)\n",
                      strings_ptr->len, token, strings_ptr->len);
 
             strings_ptr++;
+            token = token_ptr;
         }
     }
 

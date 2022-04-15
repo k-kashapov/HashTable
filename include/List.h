@@ -15,7 +15,7 @@ struct type_t
     const void *Data;
     const void *key;
     int        key_len;
-    int        key_rep; // Number of repetitions of key in hash table
+    int        key_rep = 1; // Number of repetitions of key in hash table
 };
 
 #define _type_name "int64_t"
@@ -65,11 +65,7 @@ enum LIST_STATES
                                                         "<em style = \"color : red\">ERROR: </em>"              \
                                                         #string "\n" HLINE (1000, 0), __FUNCTION__ __VA_ARGS__) \
 
-    #define LIST_OK()                                                           \
-    {                                                                           \
-        int64_t err = ListOK (lst);                                             \
-        ListDump (lst, err, __FUNCTION__);                                      \
-    }
+    #define LIST_OK() ;
 #else
     #define LIST_OK() ;
     #define HLINE(width, height)

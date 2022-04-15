@@ -48,12 +48,14 @@ int main (int argc, const char **argv)
                 list_elem.key_len, (const char *) list_elem.key, list->size, list_elem.key_len);
     }
 
-    type_t elem_found = TableFind (&table, "the", 3, FirstSymHash);
+    const char *search = "the";
+
+    type_t elem_found = TableFind (&table, search, 3, FirstSymHash);
 
     printf ("looking for: |%s|\n"
-            "found: |%s|\n"
+            "found: |%.*s|\n"
             "key rep = %d\n",
-            "the", (const char *) elem_found.key, elem_found.key_rep);
+            search, elem_found.key_len, (const char *) elem_found.key, elem_found.key_rep);
 
     DestrTable (&table, ListDtor);
 

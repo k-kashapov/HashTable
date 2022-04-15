@@ -62,16 +62,24 @@ int CreateTable (Hash_t *target_table, int InitTableCap)
 
 int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const void *key, int len))
 {
-    TABLE_MSG ("Adding element: |%.*s| of len = (%d)", 
-                value.key_len, value.key, value.key_len);
+    int64_t key_hash = UserHash (value.key, value.key_len);
 
-    List *target_list = (List *) GetElemByHash (target_table, UserHash (value.key, value.key_len));
+    TABLE_MSG ("Adding element: |%.*s| of len = (%d)\n"
+               "Hash = [%0x]\n",
+               value.key_len, value.key, value.key_len, key_hash);
+
+    List *target_list = (List *) GetElemByHash (target_table, key_hash);
+
+    TABLE_MSG ("Found list: <%p> of size = (%d)\n", target_list, target_list->size);
 
     // Compare each element of list with the key we're looking for
     // If found, increment this element's counter and don't push
 
-    for (Node *list_elem = target_list->nodes + target_list->head;
-         list_elem->next != 0;
+    Node *list_elem = target_list->nodes + target_list->head;
+
+    for (int steps = 0;
+         steps < target_list->size;
+         steps++,
          list_elem = target_list->nodes + list_elem->next)
     {
         TABLE_MSG ("comparing list: |%.*s| (%d)\n"
@@ -93,7 +101,10 @@ int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const 
 
     // If not found, push new element to list
 
+    TABLE_MSG ("NO element matched |%.*s|; Pushing new...",  value.key_len, value.key);
+
     ListPushBack (target_list, value);
+
     target_table->size++;
 
     return 0;

@@ -6,6 +6,9 @@
 #include <assert.h>
 #include <ctype.h>
 
+#define LOG_NAME "Files_H"
+#include "Logs.h"
+
 /// <summary>
 /// Максимальное количество строк, которые можно прочиать из файла
 /// </summary>
