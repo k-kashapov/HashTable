@@ -2,12 +2,9 @@
 #include "files.h"
 #include "Hashing.h"
 
-int main (int argc, const char **argv)
+int StressTest (Hash_t *table, config io_config)
 {
-    config io_config = {};
     file_info src = {};
-
-    get_params (argc, argv, &io_config);
 
     int read = read_all_words (&src, io_config.input_file);
 
@@ -17,16 +14,6 @@ int main (int argc, const char **argv)
         return READ_TEXT_FAILED;
     }
 
-    Hash_t table = {};
-
-    int created = CreateTable (&table, io_config.table_len);
-
-    if (created)
-    {
-        DestrTable (&table, ListDtor);
-        free_info (&src);
-        return created;
-    }
 
     type_t inserting = {};
 
@@ -35,31 +22,58 @@ int main (int argc, const char **argv)
         inserting.key     = src.strs[word].text;
         inserting.key_len = src.strs[word].len;
 
-        TableInsert (&table, inserting, FirstSymHash);
+        TableInsert (table, inserting, MurmurHash2A);
     }
 
-    for (int i = 0; i < table.capacity; i++)
+    // for (int i = 0; i < table->capacity; i++)
+    // {
+        // List *list = (List *) GetElemByHash (table, i);
+
+        // type_t list_elem = GET_LIST_DATA (list, list->head);
+
+        // printf ("%.*s; %ld; of size; %d\n",
+                // list_elem.key_len, (const char *) list_elem.key, list->size, list_elem.key_len);
+    // }
+
+    for (int i = 0; i < 256; i++)
     {
-        List *list = (List *) GetElemByHash (&table, i);
-
-        type_t list_elem = GET_LIST_DATA (list, list->head);
-
-        printf ("%.*s; %ld; of size; %d\n",
-                list_elem.key_len, (const char *) list_elem.key, list->size, list_elem.key_len);
+        for (int word = 0; word < src.elems_num; word++)
+        {
+            volatile type_t find_res = TableFind (table, src.strs[word].text,
+                                                  src.strs[word].len, MurmurHash2A);
+        }
     }
 
-    const char *search = "the";
+    for (int word = 0; word < src.elems_num; word++)
+    {
+        // printf ("deleting |%.*s|\n", src.strs[word].len, src.strs[word].text);
 
-    type_t elem_found = TableFind (&table, search, 3, FirstSymHash);
+        TableDelete (table, src.strs[word].text, src.strs[word].len, MurmurHash2A);
+    }
 
-    printf ("looking for: |%s|\n"
-            "found: |%.*s|\n"
-            "key rep = %d\n",
-            search, elem_found.key_len, (const char *) elem_found.key, elem_found.key_rep);
-
-    DestrTable (&table, ListDtor);
+    DestrTable (table, ListDtor);
 
     free_info (&src);
+
+    return 0;
+}
+
+int main (int argc, const char **argv)
+{
+    config io_config = {};
+    get_params (argc, argv, &io_config);
+
+    Hash_t table = {};
+
+    int created = CreateTable (&table, io_config.table_len);
+
+    if (created)
+    {
+        DestrTable (&table, ListDtor);
+        return created;
+    }
+
+    StressTest (&table, io_config);
 
     return 0;
 }

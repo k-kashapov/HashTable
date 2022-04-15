@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
+
+#define LOGS_NAME "LIST"
 
 #include "Logs.h"
 #define GET_LIST_NODE(lst, idx) ((*lst).nodes[idx])
@@ -121,6 +124,8 @@ struct List
 int64_t ListInit (List *lst, long init_size = 1);
 
 long LogicalToPhysicalAddr (List *lst, long num);
+
+long ListFind (List *target_list, type_t value);
 
 long ListGetHead (List *lst);
 

@@ -60,7 +60,7 @@ int CreateTable (Hash_t *target_table, int InitTableCap)
 // Relies highly on table capacity being a
 // power of 2, so avoid changing it
 
-int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const void *key, int len))
+int TableInsert (Hash_t *target_table, type_t value, HFunc_t UserHash)
 {
     int64_t key_hash = UserHash (value.key, value.key_len);
 
@@ -75,28 +75,13 @@ int TableInsert (Hash_t *target_table, type_t value, int64_t (*UserHash) (const 
     // Compare each element of list with the key we're looking for
     // If found, increment this element's counter and don't push
 
-    Node *list_elem = target_list->nodes + target_list->head;
+    long elem_number = ListFind (target_list, value);
 
-    for (int steps = 0;
-         steps < target_list->size;
-         steps++,
-         list_elem = target_list->nodes + list_elem->next)
+    if (elem_number)
     {
-        TABLE_MSG ("comparing list: |%.*s| (%d)\n"
-                    "with    value: |%.*s| (%d)\n",
-                    list_elem->data.key_len, list_elem->data.key, list_elem->data.key_len,
-                    value.key_len,           value.key,           value.key_len);
-
-        if (!strncmp ((const char *) list_elem->data.key,
-                      (const char *) value.key,
-                      (size_t)       value.key_len))
-        {
-            TABLE_MSG ("MATCHED new key_rep = (%d)!\n", list_elem->data.key_rep + 1);
-
-            list_elem->data.key_rep++;
-
-            return 0;
-        }
+        Node *list_elem = target_list->nodes + elem_number;
+        list_elem->data.key_rep++;
+        return 0;
     }
 
     // If not found, push new element to list
@@ -119,7 +104,7 @@ void *GetElemByHash (Hash_t *target_table, int64_t hash)
     return target_elem;
 }
 
-type_t TableFind (Hash_t *target_table, const void *key, int key_len, int64_t (* UserHash) (const void *, int))
+type_t TableFind (Hash_t *target_table, const void *key, int key_len, HFunc_t UserHash)
 {
     if (key_len < 1)
     {
@@ -129,22 +114,38 @@ type_t TableFind (Hash_t *target_table, const void *key, int key_len, int64_t (*
 
     List *target_list = (List *) GetElemByHash (target_table, UserHash (key, key_len));
 
-    if (target_list->size < 1) return GET_LIST_DATA (target_list, 0);
+    if (target_list->size < 1) return {};
 
-    Node curr_node = GET_LIST_NODE (target_list, target_list->head);
+    type_t looking_for = { key, key, key_len };
+    long   res_elem    = ListFind (target_list, looking_for);
 
-    do
+    if (res_elem) return GET_LIST_DATA (target_list, res_elem);
+
+    return {};
+}
+
+int TableDelete (Hash_t *target_table, const void *key, int key_len, HFunc_t UserHash)
+{
+    int64_t key_hash = UserHash (key, key_len);
+
+    List *list = (List *) GetElemByHash (target_table, key_hash);
+
+    type_t deleting = { key, key, key_len };
+
+    long target_elem = ListFind (list, deleting);
+
+    LOG_MSG ("found target_elem = (%d)\n", target_elem);
+
+    if (target_elem)
     {
-        int wanted = !strncmp ((const char *) curr_node.data.key,
-                               (const char *) key,
-                               (size_t) key_len);
+        ListPopPhys (list, target_elem);
+    }
+    else
+    {
+        LOG_MSG ("Element for deletion not found: |%.*s|!\n", key_len, key);
+    }
 
-        if (wanted) return curr_node.data;
-
-        curr_node = GET_LIST_NODE (target_list, curr_node.next);
-    } while (curr_node.next != 0);
-
-    return GET_LIST_DATA (target_list, 0);
+    return 0;
 }
 
 int DestrTable (Hash_t *target_table, int (*elemDtor) (void *))

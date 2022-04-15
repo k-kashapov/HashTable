@@ -44,6 +44,37 @@ int64_t ListInit (List *lst, long init_size)
     return OK;
 }
 
+long ListFind (List *target_list, type_t value)
+{
+    long list_iterator = target_list->head;
+
+    for (int steps = 0;
+         steps < target_list->size;
+         steps++,
+         list_iterator = target_list->nodes[list_iterator].next)
+    {
+        Node *list_elem = target_list->nodes + list_iterator;
+
+        LOG_MSG ("comparing value: |%.*s| (%d)\n"
+                 "with       list: |%.*s| (%d)\n",
+                 value.key_len,           value.key,           value.key_len,
+                 list_elem->data.key_len, list_elem->data.key, list_elem->data.key_len);
+
+        if (list_elem->data.key_len != value.key_len) continue;
+
+        if (!strncmp ((const char *) list_elem->data.key,
+                      (const char *) value.key,
+                       (size_t)      value.key_len))
+        {
+            LOG_MSG ("MATCHED! Key_rep = (%d)\n", list_elem->data.key_rep);
+
+            return list_iterator;
+        }
+    }
+
+    return 0;
+}
+
 long LogicalToPhysicalAddr (List *lst, long num)
 {
     LIST_OK ();
