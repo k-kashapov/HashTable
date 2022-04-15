@@ -106,22 +106,29 @@ void *GetElemByHash (Hash_t *target_table, int64_t hash)
 
 type_t TableFind (Hash_t *target_table, const void *key, int key_len, HFunc_t UserHash)
 {
+    type_t found = {};
     if (key_len < 1)
     {
         TABLE_ERR ("Invalid key len! Expected > 0, got: %d\n", key_len);
-        return {};
+    }
+    else
+    {
+        List *target_list = (List *) GetElemByHash (target_table, UserHash (key, key_len));
+
+        if (target_list->size < 1)
+        {
+            found =  {};
+        }
+        else
+        {
+            type_t looking_for = { key, key, key_len };
+            long   res_elem    = ListFind (target_list, looking_for);
+
+            if (res_elem) found =  GET_LIST_DATA (target_list, res_elem);
+        }
     }
 
-    List *target_list = (List *) GetElemByHash (target_table, UserHash (key, key_len));
-
-    if (target_list->size < 1) return {};
-
-    type_t looking_for = { key, key, key_len };
-    long   res_elem    = ListFind (target_list, looking_for);
-
-    if (res_elem) return GET_LIST_DATA (target_list, res_elem);
-
-    return {};
+    return found;
 }
 
 int TableDelete (Hash_t *target_table, const void *key, int key_len, HFunc_t UserHash)

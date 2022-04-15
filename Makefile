@@ -1,4 +1,4 @@
-basicFlags    = -I include -Wall -Wextra -O1
+basicFlags    = -I include -Wall -Wextra -g -O1
 
 listTargets   = src/List.cpp
 

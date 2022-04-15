@@ -35,7 +35,7 @@ int StressTest (Hash_t *table, config io_config)
                 // list_elem.key_len, (const char *) list_elem.key, list->size, list_elem.key_len);
     // }
 
-    for (int i = 0; i < 256; i++)
+    for (int i = 0; i < 100; i++)
     {
         for (int word = 0; word < src.elems_num; word++)
         {
