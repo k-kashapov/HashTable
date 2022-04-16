@@ -109,7 +109,7 @@ char* read_to_end (FILE *source)
 
     int length = get_len (source);
 
-    char *text_buff = (char *) calloc ( length + 1, sizeof ( char ) );
+    char *text_buff = (char *) calloc ( length + 33, sizeof ( char ) );
     assert (text_buff);
 
     int sym_read = fread (text_buff, sizeof (*text_buff), length, source);

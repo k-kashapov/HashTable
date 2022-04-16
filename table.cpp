@@ -2,6 +2,10 @@
 #include "files.h"
 #include "Hashing.h"
 
+extern "C" int64_t MurmurHash (const void *data_ptr, int len);
+
+#define HASH_USED MurmurHash
+
 int StressTest (Hash_t *table, config io_config)
 {
     file_info src = {};
@@ -14,7 +18,6 @@ int StressTest (Hash_t *table, config io_config)
         return READ_TEXT_FAILED;
     }
 
-
     type_t inserting = {};
 
     for (int word = 0; word < src.elems_num; word++)
@@ -22,25 +25,20 @@ int StressTest (Hash_t *table, config io_config)
         inserting.key     = src.strs[word].text;
         inserting.key_len = src.strs[word].len;
 
-        TableInsert (table, inserting, MurmurHash2A);
+        TableInsert (table, inserting, HASH_USED);
     }
 
     // for (int i = 0; i < table->capacity; i++)
     // {
         // List *list = (List *) GetElemByHash (table, i);
-
-        // type_t list_elem = GET_LIST_DATA (list, list->head);
-
-        // printf ("%.*s; %ld; of size; %d\n",
-                // list_elem.key_len, (const char *) list_elem.key, list->size, list_elem.key_len);
+        // printf ("%d; %d\n", i, list->size);
     // }
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 512; i++)
     {
         for (int word = 0; word < src.elems_num; word++)
         {
-            volatile type_t find_res = TableFind (table, src.strs[word].text,
-                                                  src.strs[word].len, MurmurHash2A);
+            volatile type_t find_res = TableFind (table, src.strs[word].text, src.strs[word].len, HASH_USED);
         }
     }
 
@@ -48,7 +46,7 @@ int StressTest (Hash_t *table, config io_config)
     {
         // printf ("deleting |%.*s|\n", src.strs[word].len, src.strs[word].text);
 
-        TableDelete (table, src.strs[word].text, src.strs[word].len, MurmurHash2A);
+        TableDelete (table, src.strs[word].text, src.strs[word].len, HASH_USED);
     }
 
     DestrTable (table, ListDtor);

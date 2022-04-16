@@ -1,11 +1,11 @@
 #include "HashTable.h"
 #include "string.h"
 
-int CeilPowerOfTwo (int value)
+int CeilPowerOfTwo (unsigned int value)
 {
     int res = 1;
 
-    while (value - 1)
+    while (value)
     {
         res   <<= 1;
         value >>= 1;
@@ -16,8 +16,8 @@ int CeilPowerOfTwo (int value)
 
 int CreateTable (Hash_t *target_table, int InitTableCap)
 {
-    if (InitTableCap < 2) InitTableCap = 2;
-    else InitTableCap = CeilPowerOfTwo (InitTableCap);
+    if (InitTableCap <= 2) InitTableCap = 2;
+    else InitTableCap = CeilPowerOfTwo ((unsigned) InitTableCap);
 
     void **TableData = (void **) calloc ((size_t) InitTableCap, sizeof (void **));
 
@@ -102,33 +102,6 @@ void *GetElemByHash (Hash_t *target_table, int64_t hash)
     void *target_elem = target_table->Data[hash & capacity_mask];
 
     return target_elem;
-}
-
-type_t TableFind (Hash_t *target_table, const void *key, int key_len, HFunc_t UserHash)
-{
-    type_t found = {};
-    if (key_len < 1)
-    {
-        TABLE_ERR ("Invalid key len! Expected > 0, got: %d\n", key_len);
-    }
-    else
-    {
-        List *target_list = (List *) GetElemByHash (target_table, UserHash (key, key_len));
-
-        if (target_list->size < 1)
-        {
-            found =  {};
-        }
-        else
-        {
-            type_t looking_for = { key, key, key_len };
-            long   res_elem    = ListFind (target_list, looking_for);
-
-            if (res_elem) found =  GET_LIST_DATA (target_list, res_elem);
-        }
-    }
-
-    return found;
 }
 
 int TableDelete (Hash_t *target_table, const void *key, int key_len, HFunc_t UserHash)

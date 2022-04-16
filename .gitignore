@@ -5,3 +5,5 @@
 *.txt
 *.jpg
 *.log
+callgrind*
+perf*

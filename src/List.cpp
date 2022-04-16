@@ -1,4 +1,5 @@
 #include "List.h"
+#include <x86intrin.h>
 
 #ifdef LIST_LOGS
     static int  OpenLogFile ();
@@ -62,14 +63,36 @@ long ListFind (List *target_list, type_t value)
 
         if (list_elem->data.key_len != value.key_len) continue;
 
-        if (!strncmp ((const char *) list_elem->data.key,
-                      (const char *) value.key,
-                       (size_t)      value.key_len))
+        __m128i packed_list = _mm_lddqu_si128 ((__m128i *) list_elem->data.key);
+        __m128i packed_val  = _mm_lddqu_si128 ((__m128i *) value.key);
+
+        __m128i compared    = _mm_cmpeq_epi8 (packed_val, packed_list);
+
+        // cmp_mask = { list[0] == value[0], list[1] == value[1], ... }
+
+        int cmp_mask = _mm_movemask_epi8 (compared);
+
+        // mask_for_mask = 0b00...0011...11;
+        //                          <----->
+        //                          key_len
+
+        int mask_for_mask = (1 << value.key_len) - 1;
+
+        LOG_MSG ("cmp mask = %08x\n"
+                 "mask_for_mask = %08x\n"
+                 "and: %08x\n"
+                 "neq: %08x\n"
+                 "not: %08x\n", 
+                 cmp_mask, mask_for_mask, cmp_mask & mask_for_mask,
+                 (~cmp_mask & mask_for_mask), !(~cmp_mask & mask_for_mask) );
+
+        if (!(~cmp_mask & mask_for_mask))
         {
             LOG_MSG ("MATCHED! Key_rep = (%d)\n", list_elem->data.key_rep);
-
             return list_iterator;
         }
+        
+        LOG_MSG ("NOT MATCHED! Key = (%.4s)\n", list_elem->data.key);
     }
 
     return 0;
