@@ -81,3 +81,4 @@ This was the last optimization so far. Let us sum up.
 * Finally, implementing parallel memcmp made it 2 times faster.
 
 * Overall speedup: 1.9x times
+* 1.9 / 97 lines of assembly code * 1000 = 19.6

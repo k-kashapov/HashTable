@@ -91,7 +91,7 @@ long ListFind (List *target_list, type_t value)
             LOG_MSG ("MATCHED! Key_rep = (%d)\n", list_elem->data.key_rep);
             return list_iterator;
         }
-        
+
         LOG_MSG ("NOT MATCHED! Key = (%.4s)\n", list_elem->data.key);
     }
 
