@@ -188,13 +188,15 @@ int64_t MurmurHash2 (const void *data_ptr, int len)
 }
 
 #define COUNT_HASH(bytes, bits)                                                          \
-    for (int sym = 0; sym < len - bytes + 1; sym +=bytes)                                \
+    for (; sym < len - bytes + 1; sym += bytes)                                          \
     {                                                                                    \
             res_hash = _mm_crc32_u##bits (res_hash,  *(int##bits##_t *) data);           \
     }
 
 int64_t CRC32(const void *data, int len)
 {
+    int sym = 0;
+    
     int64_t res_hash = 0xC0DE;
 
     COUNT_HASH (8, 64);

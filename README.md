@@ -77,7 +77,7 @@ This is a success! Performance imroved almost 1.5 times:
 | Intrinsics hash | Exec. Time, s |
 |:---------------:|:-------------:|
 |      NO         |     2.900     |
-|      YES        |     2.500     |
+|      YES        |     2.400     |
 
 This was the last optimization so far. Let us sum up.
 
@@ -87,7 +87,7 @@ This was the last optimization so far. Let us sum up.
 * Changing the Hash function as well as implementing it in ASM decreases the computation speed.
 * Replacing strncmp with memcmp is a 13% boost.
 * Implementing parallel memcmp made it 2 times faster.
-* Finaly, replacing Murmur Hash with parallel CRC32 made our program 16% faster.
+* Finaly, replacing Murmur Hash with parallel CRC32 made our program 18% faster.
 
-* Overall speedup: 2.1x times
-* 2.1 / 113 lines of assembly and SIMD code * 1000 = 18.6
+* Overall speedup: 2.2x times
+* 2.2 / 113 lines of assembly and SIMD code * 1000 = 18.8
