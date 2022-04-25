@@ -69,7 +69,15 @@ This is a success! Performance imroved almost 1.5 times:
 | Intrinsics | Exec. Time, s |
 |:----------:|:-------------:|
 |    NO      |     4.500     |
-|    YES     |     2.700     |
+|    YES     |     2.900     |
+
+
+* Another attempt on changing the hash function: Use intrinsics CRC32 hash.
+
+| Intrinsics hash | Exec. Time, s |
+|:---------------:|:-------------:|
+|      NO         |     2.900     |
+|      YES        |     2.500     |
 
 This was the last optimization so far. Let us sum up.
 
@@ -78,7 +86,8 @@ This was the last optimization so far. Let us sum up.
 * Inlining a function gave us 2% performance boost.
 * Changing the Hash function as well as implementing it in ASM decreases the computation speed.
 * Replacing strncmp with memcmp is a 13% boost.
-* Finally, implementing parallel memcmp made it 2 times faster.
+* Implementing parallel memcmp made it 2 times faster.
+* Finaly, replacing Murmur Hash with parallel CRC32 made our program 16% faster.
 
-* Overall speedup: 1.9x times
-* 1.9 / 97 lines of assembly code * 1000 = 19.6
+* Overall speedup: 2.1x times
+* 2.1 / 113 lines of assembly and SIMD code * 1000 = 18.6

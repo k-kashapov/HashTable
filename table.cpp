@@ -4,7 +4,7 @@
 
 extern "C" int64_t MurmurHash (const void *data_ptr, int len);
 
-#define HASH_USED MurmurHash
+#define HASH_USED CRC32
 
 int StressTest (Hash_t *table, config io_config)
 {

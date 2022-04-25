@@ -1,4 +1,4 @@
-basicFlags    = -I include -Wall -Wextra -g -O1 -no-pie -msse3
+basicFlags    = -I include -Wall -Wextra -g -O1 -no-pie -msse3 -msse4.2
 
 listTargets   = src/List.cpp
 
