@@ -43,6 +43,12 @@ Making it inline impacted slightly overall performance. Table of the ```main``` 
 |    Murmur     |        780        |     5.100     |
 |    djb2       |        690        |     7.900     |
 
+![mur](https://user-images.githubusercontent.com/52855633/165120395-f061d32a-b027-4bf7-abe2-f713c9570680.png)
+
+![djb2](https://user-images.githubusercontent.com/52855633/165120491-d74a0df1-0341-4904-9add-f1df32d215c7.png)
+
+Note: Although the number of cycles reduced when using djb2 hash, execution time increased.
+
 We have tried to improve execution time by rewriting MurmurHash in Assembly language.
 However, this did only reduce the performance of the program:
 
@@ -75,6 +81,7 @@ This is a success! Performance imroved almost 1.5 times:
 * Another attempt on changing the hash function: Use intrinsics CRC32 hash.
 
 | Intrinsics hash | Exec. Time, s |
+
 |:---------------:|:-------------:|
 |      NO         |     2.900     |
 |      YES        |     2.400     |
@@ -88,6 +95,8 @@ This was the last optimization so far. Let us sum up.
 * Replacing strncmp with memcmp is a 13% boost.
 * Implementing parallel memcmp made it 2 times faster.
 * Finaly, replacing Murmur Hash with parallel CRC32 made our program 18% faster.
+
+![final](https://user-images.githubusercontent.com/52855633/165120552-75fb9277-daa6-44ff-9665-918b9877c7f8.png)
 
 * Overall speedup: 2.2x times
 * 2.2 / 113 lines of assembly and SIMD code * 1000 = 18.8
