@@ -81,7 +81,6 @@ This is a success! Performance imroved almost 1.5 times:
 * Another attempt on changing the hash function: Use intrinsics CRC32 hash.
 
 | Intrinsics hash | Exec. Time, s |
-
 |:---------------:|:-------------:|
 |      NO         |     2.900     |
 |      YES        |     2.400     |
