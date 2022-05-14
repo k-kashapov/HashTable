@@ -29,29 +29,44 @@ Experimental results:
 
 1) String length hash
 
+![image](https://user-images.githubusercontent.com/52855633/168428653-edf13266-c173-4817-b3c4-51cbc8c0ad8b.png)
+
 Max collisions = 1594 at length = 6
 
 2) Fist tymbol hash
+
+![image](https://user-images.githubusercontent.com/52855633/168428691-4dfb5237-1c16-4f0a-a7f3-568745ffaec9.png)
 
 Max collisions = 717 at letter S
 
 3) Sum of symbols hash
 
+![image](https://user-images.githubusercontent.com/52855633/168428698-0b9caf09-bdf4-4bd7-9eb6-6306a990df67.png)
+
 Max value = 50
 
 4) ROL hash
 
+![image](https://user-images.githubusercontent.com/52855633/168428705-7598c8d8-1a39-40ac-8a1b-06b09f61fcd9.png)
+
 Max value = 21
 
 5) Murmur hash
+
+![image](https://user-images.githubusercontent.com/52855633/168428714-481c3379-425d-4185-94cd-4df9ac1c46de.png)
 
 Max value = 13
 
 Chi-squared tests allows us to get the characteristic value of uniformity.
 Values between 0.95 and 1.05 indicate highly uniform distribution.
 
+The formula used:
+
+![image](https://user-images.githubusercontent.com/52855633/168428722-a938a0fa-f9c1-40c9-920d-d30eeae6ff6a.png)
+
 Results:
 
+![image](https://user-images.githubusercontent.com/52855633/168428741-b3907488-13ae-4df7-8ab2-3ff1a1f45f07.png)
 
 MurmurHash is the most uniform hash with value = 1.07.
 
