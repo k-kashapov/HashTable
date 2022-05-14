@@ -27,31 +27,31 @@ Chi-squared test was performed to estimate the uniformity quantitively.
 
 Experimental results:
 
-1) String length hash
+## 1) String length hash
 
 Max collisions = 1594 at length = 6
 
 <img src="https://user-images.githubusercontent.com/52855633/168428653-edf13266-c173-4817-b3c4-51cbc8c0ad8b.png" width = 70%>
 
-2) Fist tymbol hash
+## 2) Fist tymbol hash
 
 Max collisions = 717 at letter S
 
 <ing src="https://user-images.githubusercontent.com/52855633/168428691-4dfb5237-1c16-4f0a-a7f3-568745ffaec9.png" width = 70%>
 
-3) Sum of symbols hash
+## 3) Sum of symbols hash
 
 Max value = 50
 
 <img src="https://user-images.githubusercontent.com/52855633/168428698-0b9caf09-bdf4-4bd7-9eb6-6306a990df67.png" width = 70%>
 
-4) ROL hash
+## 4) ROL hash
 
 Max value = 21
 
 <img src="https://user-images.githubusercontent.com/52855633/168428705-7598c8d8-1a39-40ac-8a1b-06b09f61fcd9.png" width = 70%>
 
-5) Murmur hash
+## 5) Murmur hash
 
 Max value = 13
 
@@ -65,7 +65,7 @@ The formula used:
 
 <img src="https://user-images.githubusercontent.com/52855633/168428722-a938a0fa-f9c1-40c9-920d-d30eeae6ff6a.png" width = 30%>
 
-Results:
+## Results:
 
 <img src="https://user-images.githubusercontent.com/52855633/168428741-b3907488-13ae-4df7-8ab2-3ff1a1f45f07.png" width = 50%>
 
