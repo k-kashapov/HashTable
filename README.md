@@ -161,6 +161,6 @@ This was the last optimization so far. Let us sum up.
 
 * Overall speedup: 2.2x times
     
-# Optimization coefficient
+## Optimization coefficient
 As a part of our course we were recommended to count the following value:
 * 2.2 times performance boost / 113 lines of assembly and SIMD code * 1000 = 18.8
