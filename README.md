@@ -81,6 +81,8 @@ performance. The stress test was the following:
     2) For each word of the book, call TableFind 512 times
     3) Erase the whole book word by word
 
+Peformance test were conducted using the ```Callgrind``` tool and Linux's ```time```. The number of cycles a function is taking and overall execution time are optimized.
+
 * Judging by the Callgrind output, the slowest function was TableFind itself, as it
 does a lot of safety checks in runtime. So we have decided to optimize it first.
 
