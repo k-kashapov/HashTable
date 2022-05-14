@@ -25,7 +25,7 @@ To test the function, we have hashed the entire Silmarillion by J.R. Tolkien wor
 Diagrams of Hash collisions were plotted.
 Chi-squared test was performed to estimate the uniformity quantitively.
 
-Experimental results:
+# Experimental results:
 
 ## 1) String length hash
 
