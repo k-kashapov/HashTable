@@ -49,13 +49,13 @@ Max value = 50
 
 Max value = 21
 
-![image](https://user-images.githubusercontent.com/52855633/168428705-7598c8d8-1a39-40ac-8a1b-06b09f61fcd9.png)
+<img src="https://user-images.githubusercontent.com/52855633/168428705-7598c8d8-1a39-40ac-8a1b-06b09f61fcd9.png" width = 50%>
 
 5) Murmur hash
 
 Max value = 13
 
-<img src="https://user-images.githubusercontent.com/52855633/168428714-481c3379-425d-4185-94cd-4df9ac1c46de.png" width = 200>
+<img src="https://user-images.githubusercontent.com/52855633/168428714-481c3379-425d-4185-94cd-4df9ac1c46de.png" width = 50%>
 
 Chi-squared tests allows us to get the characteristic value of uniformity.
 Values between 0.95 and 1.05 indicate highly uniform distribution.
