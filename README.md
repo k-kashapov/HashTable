@@ -62,8 +62,12 @@ Values between 0.95 and 1.05 indicate highly uniform distribution.
 
 The formula used:
 
-
 <img src="https://user-images.githubusercontent.com/52855633/168428722-a938a0fa-f9c1-40c9-920d-d30eeae6ff6a.png" width = 30%>
+
+Where 
+* ```m``` - number of hash values
+* ```n``` - number of occupated hash values
+* ```b[j]``` - amount of collisions of value j
 
 ## Results:
 
