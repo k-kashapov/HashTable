@@ -33,11 +33,11 @@ Max collisions = 1594 at length = 6
 
 <img src="https://user-images.githubusercontent.com/52855633/168428653-edf13266-c173-4817-b3c4-51cbc8c0ad8b.png" width = 70%>
 
-## 2) Fist tymbol hash
+## 2) Fist symbol hash
 
 Max collisions = 717 at letter S
 
-<ing src="https://user-images.githubusercontent.com/52855633/168428691-4dfb5237-1c16-4f0a-a7f3-568745ffaec9.png" width = 70%>
+<img src="https://user-images.githubusercontent.com/52855633/168428691-4dfb5237-1c16-4f0a-a7f3-568745ffaec9.png" width = 70%>
 
 ## 3) Sum of symbols hash
 
