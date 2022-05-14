@@ -120,8 +120,8 @@ However, this did only reduce the performance of the program:
 |:--------:|:-------------:|
 |   NO     |     6.400     |
 |   YES    |     6.700     |
-
-* The most heavy function is now List Find, as it uses strncmp too many times. Zero step is
+    
+* At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times. Zero step is
 to replace strcmp with memcmp, as we already have length of each string.
 
 | Comparator | Exec. Time, s |
@@ -138,15 +138,15 @@ This is a success! Performance imroved almost 1.5 times:
 |:----------:|:-------------:|
 |    NO      |     4.500     |
 |    YES     |     2.900     |
-
-
+    
 * Another attempt on changing the hash function: Use intrinsics CRC32 hash.
 
 | Intrinsics hash | Exec. Time, s |
 |:---------------:|:-------------:|
 |      NO         |     2.900     |
 |      YES        |     2.400     |
-
+    
+  
 This was the last optimization so far. Let us sum up.
 
 # Optimization summary
@@ -160,4 +160,7 @@ This was the last optimization so far. Let us sum up.
 <img src="https://user-images.githubusercontent.com/52855633/165120552-75fb9277-daa6-44ff-9665-918b9877c7f8.png" width = 50%>
 
 * Overall speedup: 2.2x times
-* 2.2 / 113 lines of assembly and SIMD code * 1000 = 18.8
+    
+# Optimization coefficient
+As a part of our course we were recommended to count the following value:
+* 2.2 times performance boost / 113 lines of assembly and SIMD code * 1000 = 18.8
