@@ -29,33 +29,33 @@ Experimental results:
 
 1) String length hash
 
-![image](https://user-images.githubusercontent.com/52855633/168428653-edf13266-c173-4817-b3c4-51cbc8c0ad8b.png)
-
 Max collisions = 1594 at length = 6
+
+![image](https://user-images.githubusercontent.com/52855633/168428653-edf13266-c173-4817-b3c4-51cbc8c0ad8b.png)
 
 2) Fist tymbol hash
 
-![image](https://user-images.githubusercontent.com/52855633/168428691-4dfb5237-1c16-4f0a-a7f3-568745ffaec9.png)
-
 Max collisions = 717 at letter S
+
+![image](https://user-images.githubusercontent.com/52855633/168428691-4dfb5237-1c16-4f0a-a7f3-568745ffaec9.png)
 
 3) Sum of symbols hash
 
-![image](https://user-images.githubusercontent.com/52855633/168428698-0b9caf09-bdf4-4bd7-9eb6-6306a990df67.png)
-
 Max value = 50
+
+![image](https://user-images.githubusercontent.com/52855633/168428698-0b9caf09-bdf4-4bd7-9eb6-6306a990df67.png)
 
 4) ROL hash
 
-![image](https://user-images.githubusercontent.com/52855633/168428705-7598c8d8-1a39-40ac-8a1b-06b09f61fcd9.png)
-
 Max value = 21
+
+![image](https://user-images.githubusercontent.com/52855633/168428705-7598c8d8-1a39-40ac-8a1b-06b09f61fcd9.png)
 
 5) Murmur hash
 
-![image](https://user-images.githubusercontent.com/52855633/168428714-481c3379-425d-4185-94cd-4df9ac1c46de.png)
-
 Max value = 13
+
+<img src="https://user-images.githubusercontent.com/52855633/168428714-481c3379-425d-4185-94cd-4df9ac1c46de.png" width = 200>
 
 Chi-squared tests allows us to get the characteristic value of uniformity.
 Values between 0.95 and 1.05 indicate highly uniform distribution.
