@@ -121,8 +121,6 @@ However, this did only reduce the performance of the program:
 |   NO     |     6.400     |
 |   YES    |     6.700     |
 
-Result: Hash function is working almost perfectly, no need to optimize it.
-
 * The most heavy function is now List Find, as it uses strncmp too many times. Zero step is
 to replace strcmp with memcmp, as we already have length of each string.
 
