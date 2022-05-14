@@ -18,7 +18,7 @@ The first part of the task was to check the uniformity of 5 hash functions:
 1) Hash = String length
 2) Hash = First symbol of the string
 3) Sum of symbols' ASCII codes
-4) ROL hash: Hash[i + 1] = (Hash[i] ROL 1) ^ String[i + 1]
+4) ROL hash: ```Hash[i + 1] = (Hash[i] ROL 1) ^ String[i + 1]```
 5) MurmurHash2A
 
 To test the function, we have hashed the entire Silmarillion by J.R. Tolkien word by word.
