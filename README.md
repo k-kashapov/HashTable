@@ -78,12 +78,11 @@ MurmurHash is the most uniform hash with value = 1.07.
 That concludes our research.
 
 # Optimization history
-* When the first version of the program was finished, we used Callgrind to profile its
-performance. The stress test was the following:
+* We want our HashTable to be used to search elements by key in long texts (more than 10000 words). As a result, the stress test was the following:
 
     1) Load the whole Silmarillion by J.R. Tolkien into the hash table
-    2) For each word of the book, call TableFind 512 times
-    3) Erase the whole book word by word
+    2) For each word of the book, call ```TableFind``` 512 times
+    3) Erase the whole book from Table word by word
 
 Peformance test were conducted using the ```Callgrind``` tool, ```perf``` and Linux's ```time```. The number of cycles a function is taking and overall execution time are optimized.
 
@@ -117,11 +116,15 @@ Inlining the function gave slight performance boost and removed it from the top 
 |    Murmur     |        780        |  5.10 ± 0.05  |
 |    djb2       |        690        |  7.90 ± 0.05  |
 
-### Note: From now on, execution time is optimized using ```perf``` data. Callgrind output will be supressed in the report.
+```MurmurHash``` Callgrind output:
 
 <img src="https://user-images.githubusercontent.com/52855633/165120395-f061d32a-b027-4bf7-abe2-f713c9570680.png" width = 50%>
 
+```djb2``` Callgrind output:
+
 <img src="https://user-images.githubusercontent.com/52855633/165120491-d74a0df1-0341-4904-9add-f1df32d215c7.png" width = 50%>
+
+### Note: From now on, execution time is optimized using ```perf``` data. Callgrind output will be supressed in the report.
 
 We have tried to improve execution time by rewriting MurmurHash in Assembly language.
 However, this did only reduce the performance of the program:
@@ -134,6 +137,8 @@ However, this did only reduce the performance of the program:
 ## StrCmp optimizations
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times. Zero step is
 to replace strcmp with memcmp, as we already have length of each string.
+
+<img src="https://user-images.githubusercontent.com/52855633/168487770-ea7c3308-1380-4478-84f9-cacdf0e5dbe4.png" width = 50%>
 
 | Comparator | Exec. Time, s |
 |:----------:|:-------------:|
