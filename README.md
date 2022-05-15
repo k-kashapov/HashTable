@@ -64,19 +64,21 @@ Max value = 13
 
 <img src="https://user-images.githubusercontent.com/52855633/168494613-e9568ccd-9ea2-406d-a543-297b87ba8935.png" width = 70%>
 
-Chi-squared tests allows us to get the characteristic value of uniformity.
+## Chi-squared test
+
+[Chi-squared](https://en.wikipedia.org/wiki/Chi-squared_test) tests allows us to get the characteristic value of uniformity.
 Values between 0.95 and 1.05 indicate highly uniform distribution.
 
 The formula used:
 
-<img src="https://user-images.githubusercontent.com/52855633/168428722-a938a0fa-f9c1-40c9-920d-d30eeae6ff6a.png" width = 30%>
+<img src="https://user-images.githubusercontent.com/52855633/168495477-6f6aeb29-6d93-47bc-bfc5-0d958513ef8c.png" width = 35%>
 
 Where 
 * ```m``` - number of hash values
 * ```n``` - number of occupated hash values
 * ```b[j]``` - amount of collisions of value j
 
-## Results:
+### Results
 
 <img src="https://user-images.githubusercontent.com/52855633/168494851-3ce246a2-e7b0-400a-a2eb-0b269664681b.png" width = 50%>
 
@@ -108,12 +110,10 @@ Inlining the function gave almost no performance boost, but removed the function
 |   NO    |         2.7        |  5.17 ± 0.2   |
 |   YES   |         3.0        |  5.07 ± 0.2   |
 
-### Note: Although the number of cycles has increased, the execution time is better.
+### Note: Although the number of instuctions has increased, the execution time is better.
 
 ## Hash optimization
 * The next function to optimize was Hash function.
-
-### Note: From now on, execution time is optimized using ```perf``` data. Callgrind output will be supressed in the report.
 
 We have tried to improve execution time by rewriting MurmurHash in Assembly language.
 However, this did only reduce the performance of the program:
