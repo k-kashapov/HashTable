@@ -13,13 +13,14 @@ Then use a constructor to prepare it properly;
 
 # Uniformity test
 
-The first part of the task was to check the uniformity of 5 hash functions:
+The first part of the task was to check the uniformity of several hash functions:
 
 1) Hash = String length
 2) Hash = First symbol of the string
 3) Sum of symbols' ASCII codes
 4) ROL hash: ```Hash[i + 1] = (Hash[i] ROL 1) ^ String[i + 1]```
 5) MurmurHash2A
+6) CRC32 Hash
 
 To test the function, we have hashed the entire Silmarillion by J.R. Tolkien word by word.
 Diagrams of Hash collisions were plotted. Amount of collisions of value H = length of the List, associated with hash value H.
@@ -57,6 +58,12 @@ Max value = 13
 
 <img src="https://user-images.githubusercontent.com/52855633/168428714-481c3379-425d-4185-94cd-4df9ac1c46de.png" width = 70%>
 
+## 6) CRC32 hash
+
+Max value = 13
+
+<img src="https://user-images.githubusercontent.com/52855633/168494613-e9568ccd-9ea2-406d-a543-297b87ba8935.png" width = 70%>
+
 Chi-squared tests allows us to get the characteristic value of uniformity.
 Values between 0.95 and 1.05 indicate highly uniform distribution.
 
@@ -71,18 +78,18 @@ Where
 
 ## Results:
 
-<img src="https://user-images.githubusercontent.com/52855633/168428741-b3907488-13ae-4df7-8ab2-3ff1a1f45f07.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168494851-3ce246a2-e7b0-400a-a2eb-0b269664681b.png" width = 50%>
 
-MurmurHash is the most uniform hash with value = 1.07.
+CRC32 and MurmurHash are the most uniform hashes with values 1.06 and 1.07 respectively.
 
 That concludes our research.
 
 # Optimization history
 * We want our HashTable to be used to search elements by key in long texts (more than 10000 words). As a result, the stress test was the following:
 
-    1) Load the whole Silmarillion by J.R. Tolkien into the hash table
-    2) For each word of the book, call ```TableFind``` 512 times
-    3) Erase the whole book from Table word by word
+1) Load the whole Silmarillion by J.R. Tolkien into the hash table
+2) For each word of the book, call ```TableFind``` 512 times
+3) Erase the whole book from Table word by word
 
 Peformance test were conducted using the ```Callgrind``` tool, ```perf``` and Linux's ```time```. The number of cycles a function is taking and overall execution time are optimized.
 
@@ -104,20 +111,7 @@ Inlining the function gave almost no performance boost, but removed the function
 ### Note: Although the number of cycles has increased, the execution time is better.
 
 ## Hash optimization
-* The next function to optimize was MurmurHash. We tried using djb2 hash function instead of Murmur. The amount of instructions executed was reduced. However, overall execution time suffered from this:
-
-| Hash Function | Instructions, Mil | Exec. Time, s |
-|:-------------:|:-----------------:|:-------------:|
-|    Murmur     |        780        |  5.10 ± 0.2   |
-|    djb2       |        690        |  7.90 ± 0.2   |
-
-```MurmurHash``` Callgrind output:
-
-<img src="https://user-images.githubusercontent.com/52855633/165120395-f061d32a-b027-4bf7-abe2-f713c9570680.png" width = 50%>
-
-```djb2``` Callgrind output:
-
-<img src="https://user-images.githubusercontent.com/52855633/165120491-d74a0df1-0341-4904-9add-f1df32d215c7.png" width = 50%>
+* The next function to optimize was Hash function.
 
 ### Note: From now on, execution time is optimized using ```perf``` data. Callgrind output will be supressed in the report.
 
@@ -132,7 +126,7 @@ However, this did only reduce the performance of the program:
 ## StrCmp optimizations
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times.
 
-From the following screenshot we can see, that the most time-consuming part of the ListFind function is the conditional jump. It is the result of ```strcmp``` being slow.
+From the following screenshot we can see, that the most time-consuming part of the ListFind function is the ```strcmp```.
 
 <img src="https://user-images.githubusercontent.com/52855633/168487770-ea7c3308-1380-4478-84f9-cacdf0e5dbe4.png" width = 70%>
 
