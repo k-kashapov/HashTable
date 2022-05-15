@@ -115,7 +115,8 @@ Making inlining it did not impact overall performance. Table of the ```main``` f
 
 <img src="https://user-images.githubusercontent.com/52855633/165120491-d74a0df1-0341-4904-9add-f1df32d215c7.png" width = 50%>
 
-Note: Although the number of cycles reduced when using djb2 hash, execution time increased.
+### Note: Although the number of cycles reduced when using djb2 hash, execution time increased.
+### From now on, only execution time is optimized. Callgrind output will be supressed in the report.
 
 We have tried to improve execution time by rewriting MurmurHash in Assembly language.
 However, this did only reduce the performance of the program:
