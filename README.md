@@ -166,6 +166,8 @@ This is a success! Performance imroved almost 1.5 times:
 |      NO         |  2.90 ± 0.05  |
 |      YES        |  2.40 ± 0.05  |
 
+Intrinsics Hash gave 13% performance boost.
+
 The next function to optimize is GetElemByHash.
 We have tried to optimize it, by replacing it with macro. However, it gave no performance boost.
 
