@@ -87,6 +87,7 @@ performance. The stress test was the following:
 
 Peformance test were conducted using the ```Callgrind``` tool, ```perf``` and Linux's ```time```. The number of cycles a function is taking and overall execution time are optimized.
 
+## TableFind optimization
 * Judging by the Callgrind output, the slowest function was TableFind itself, as it
 does a lot of safety checks in runtime. So we have decided to optimize it first.
 
@@ -97,13 +98,18 @@ This reduced the number of cycles TableFind is executed from 1.6 Bil to 800 Mil.
 
 After this, we have found that the prologue of the TableFind function requires significant time. So the next step to optimize it was making this function inline.
 
-Making inlining it did not impact overall performance. Table of the ```main``` fucntion performance:
+<img src="https://user-images.githubusercontent.com/52855633/168487189-b3dc61a0-fa07-42e2-98f0-48835ada5e79.png" width = 50%>
+
+Inlining the function gave slight performance boost and removed it from the top of callgrind output. Table of the ```main``` function performance:
 
 | Inline? | Instructions, Bil  | Exec. Time, s |
 |:-------:|:------------------:|:-------------:|
-|   NO    |         2.7        |  5.17 ± 0.2   |
-|   YES   |         3.0        |  5.07 ± 0.2   |
+|   NO    |         2.7        |  5.17 ± 0.05  |
+|   YES   |         3.0        |  5.07 ± 0.05  |
 
+### Note: Although the number of cycles has increased, the execution time is better.
+
+## Hash optimization
 * The next function to optimize was MurmurHash. We tried using djb2 hash function instead of Murmur. The amount of instructions executed was reduced. However, overall execution time suffered from this:
 
 | Hash Function | Instructions, Mil | Exec. Time, s |
@@ -111,12 +117,11 @@ Making inlining it did not impact overall performance. Table of the ```main``` f
 |    Murmur     |        780        |  5.10 ± 0.05  |
 |    djb2       |        690        |  7.90 ± 0.05  |
 
+### Note: From now on, execution time is optimized using ```perf``` data. Callgrind output will be supressed in the report.
+
 <img src="https://user-images.githubusercontent.com/52855633/165120395-f061d32a-b027-4bf7-abe2-f713c9570680.png" width = 50%>
 
 <img src="https://user-images.githubusercontent.com/52855633/165120491-d74a0df1-0341-4904-9add-f1df32d215c7.png" width = 50%>
-
-### Note: Although the number of cycles reduced when using djb2 hash, execution time increased.
-### From now on, only execution time is optimized. Callgrind output will be supressed in the report.
 
 We have tried to improve execution time by rewriting MurmurHash in Assembly language.
 However, this did only reduce the performance of the program:
@@ -125,7 +130,8 @@ However, this did only reduce the performance of the program:
 |:--------:|:-------------:|
 |   NO     |  6.40 ± 0.05  |
 |   YES    |  6.70 ± 0.05  |
-    
+
+## StrCmp optimizations
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times. Zero step is
 to replace strcmp with memcmp, as we already have length of each string.
 
@@ -144,6 +150,7 @@ This is a success! Performance imroved almost 1.5 times:
 |    NO      |  4.50 ± 0.05  |
 |    YES     |  2.90 ± 0.05  |
     
+## One mode Hash optimization attempt
 * Another attempt on changing the hash function: Use intrinsics CRC32 hash.
 
 | Intrinsics hash | Exec. Time, s |
@@ -151,7 +158,6 @@ This is a success! Performance imroved almost 1.5 times:
 |      NO         |  2.90 ± 0.05  |
 |      YES        |  2.40 ± 0.05  |
     
-  
 This was the last optimization so far. Let us sum up.
 
 # Optimization summary
