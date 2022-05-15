@@ -97,12 +97,12 @@ This reduced the number of cycles TableFind is executed from 1.6 Bil to 800 Mil.
 
 After this, we have found that the prologue of the TableFind function requires significant time. So the next step to optimize it was making this function inline.
 
-Making it inline impacted slightly overall performance. Table of the ```main``` fucntion performance:
+Making inlining it did not impact overall performance. Table of the ```main``` fucntion performance:
 
 | Inline? | Instructions, Bil  | Exec. Time, s |
 |:-------:|:------------------:|:-------------:|
-|   NO    |         2.7        |  5.17 ± 0.05  |
-|   YES   |         3.0        |  5.07 ± 0.05  |
+|   NO    |         2.7        |  5.17 ± 0.2   |
+|   YES   |         3.0        |  5.07 ± 0.2   |
 
 * The next function to optimize was MurmurHash. We tried using djb2 hash function instead of Murmur. The amount of instructions executed was reduced. However, overall execution time suffered from this:
 
