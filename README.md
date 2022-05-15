@@ -182,6 +182,7 @@ This was the last optimization so far. Let us sum up.
 
 # Optimization summary
 
+* ```perf``` killed my processor once. It was very scary...
 * Inlining a function gave us 2% performance boost.
 * Changing the Hash function as well as implementing it in ASM decreases the computation speed.
 * Replacing strncmp with memcmp is a 13% boost.
