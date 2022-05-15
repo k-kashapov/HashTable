@@ -168,7 +168,7 @@ This is a success! Performance imroved almost 1.5 times:
 
 Intrinsics Hash gave 13% performance boost.
 
-The next function to optimize is GetElemByHash.
+* The next function to optimize is GetElemByHash.
 We have tried to optimize it, by replacing it with macro. However, it gave no performance boost.
 
 ![get_elem](https://user-images.githubusercontent.com/52855633/168489148-dd0af343-7394-445e-b4c2-fbdda554e4a5.png)
