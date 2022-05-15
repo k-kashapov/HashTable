@@ -93,7 +93,7 @@ That concludes our research.
 2) For each word of the book, call ```TableFind``` 512 times
 3) Erase the whole book from Table word by word
 
-Peformance test were conducted using the ```Callgrind``` tool, ```perf``` and Linux's ```time```. The number of cycles a function is taking and overall execution time are optimized.
+Peformance test were conducted using the ```perf``` tool and Linux's ```time```. The number of cycles a function is executed and overall execution time are optimized.
 
 ## TableFind optimization
 * Judging by the ```perf``` output, the slowest function was TableFind itself, as it
@@ -105,10 +105,16 @@ We have found that the prologue of the TableFind function requires significant t
 
 Inlining the function gave almost no performance boost, but removed the function from the top of callgrind output. Table of the ```main``` function performance:
 
-| Inline? |   Period, Mil. cycles   | Exec. Time, s |
+| Inline? |   Period, Bil. cycles   | Exec. Time, s |
 |:-------:|:-----------------------:|:-------------:|
-|   NO    |                         |  5.17 ± 0.2   |
-|   YES   |                         |  5.07 ± 0.2   |
+|   NO    |          5.6            |  5.17 ± 0.2   |
+|   YES   |          4.4            |  5.07 ± 0.2   |
+
+After inlining:
+
+<img src="https://user-images.githubusercontent.com/52855633/168499750-20edc128-2813-4574-81bf-1b9cd816efd0.png" width = 50%>
+
+```CPU cycles for TableFind = Δ(cycles for StressTest)```, because they now form a single function.
 
 ## Hash optimization
 * The next function to optimize was Hash function.
