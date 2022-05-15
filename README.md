@@ -138,7 +138,9 @@ However, this did only reduce the performance of the program:
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times. Zero step is
 to replace strcmp with memcmp, as we already have length of each string.
 
-<img src="https://user-images.githubusercontent.com/52855633/168487770-ea7c3308-1380-4478-84f9-cacdf0e5dbe4.png" width = 50%>
+From the following screenshot we can see, that the most time-consuming part of the ListFind function is the conditional jump. It is the result of ```strcmp``` being slow.
+
+<img src="https://user-images.githubusercontent.com/52855633/168487770-ea7c3308-1380-4478-84f9-cacdf0e5dbe4.png" width = 70%>
 
 | Comparator | Exec. Time, s |
 |:----------:|:-------------:|
