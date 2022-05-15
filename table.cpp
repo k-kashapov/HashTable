@@ -38,7 +38,7 @@ int StressTest (Hash_t *table, config io_config)
     {
         for (int word = 0; word < src.elems_num; word++)
         {
-            volatile type_t find_res = TableFind (table, src.strs[word].text, src.strs[word].len, HASH_USED);
+            volatile  type_t find_res = TableFind (table, src.strs[word].text, src.strs[word].len, HASH_USED);
         }
     }
 

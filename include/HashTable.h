@@ -4,6 +4,8 @@
 #define TABLE_MSG(msg, ...) LOG_MSG ("HASH_TABLE:\n" msg, __VA_ARGS__);
 #define TABLE_ERR(msg, ...) LOG_ERR ("HASH_TABLE:\n" msg, __VA_ARGS__);
 
+#define GET_ELEM_BY_HASH(tbl_, hash_) (tbl_->Data[hash_ & (tbl_->capacity - 1)])
+
 struct Hash_t
 {
     void **Data;
@@ -30,7 +32,7 @@ inline type_t TableFind (Hash_t *target_table, const void *key, int key_len, HFu
     }
     else
     {
-        List *target_list = (List *) GetElemByHash (target_table, UserHash (key, key_len));
+        List *target_list = (List *) GET_ELEM_BY_HASH (target_table, UserHash (key, key_len));
 
         if (target_list->size > 1)
         {

@@ -1,5 +1,6 @@
 *.exe
 *.html
+*.o
 *.dot
 *.png
 *.txt
