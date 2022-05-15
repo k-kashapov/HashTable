@@ -22,7 +22,7 @@ The first part of the task was to check the uniformity of 5 hash functions:
 5) MurmurHash2A
 
 To test the function, we have hashed the entire Silmarillion by J.R. Tolkien word by word.
-Diagrams of Hash collisions were plotted.
+Diagrams of Hash collisions were plotted. Amount of collisions of value H = length of the List, associated with hash value H.
 Chi-squared test was performed to estimate the uniformity quantitively.
 
 # Experimental results:
@@ -87,7 +87,7 @@ That concludes our research.
 Peformance test were conducted using the ```Callgrind``` tool, ```perf``` and Linux's ```time```. The number of cycles a function is taking and overall execution time are optimized.
 
 ## TableFind optimization
-* Judging by the Callgrind output, the slowest function was TableFind itself, as it
+* Judging by the ```perf``` output, the slowest function was TableFind itself, as it
 does a lot of safety checks in runtime. So we have decided to optimize it first.
 
 The first step was to reduce the number of conditional jumps as they are highly inefficient.
