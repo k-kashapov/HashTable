@@ -101,15 +101,15 @@ Making it inline impacted slightly overall performance. Table of the ```main``` 
 
 | Inline? | Instructions, Bil  | Exec. Time, s |
 |:-------:|:------------------:|:-------------:|
-|   NO    |         2.7        |  5.17 ± 0.01  |
-|   YES   |         3.0        |  5.07 ± 0.01  |
+|   NO    |         2.7        |  5.17 ± 0.05  |
+|   YES   |         3.0        |  5.07 ± 0.05  |
 
 * The next function to optimize was MurmurHash. We tried using djb2 hash function instead of Murmur. The amount of instructions executed was reduced. However, overall execution time suffered from this:
 
 | Hash Function | Instructions, Mil | Exec. Time, s |
 |:-------------:|:-----------------:|:-------------:|
-|    Murmur     |        780        |  5.10 ± 0.01  |
-|    djb2       |        690        |  7.90 ± 0.01  |
+|    Murmur     |        780        |  5.10 ± 0.05  |
+|    djb2       |        690        |  7.90 ± 0.05  |
 
 <img src="https://user-images.githubusercontent.com/52855633/165120395-f061d32a-b027-4bf7-abe2-f713c9570680.png" width = 50%>
 
@@ -122,16 +122,16 @@ However, this did only reduce the performance of the program:
 
 | Assembly | Exec. Time, s |
 |:--------:|:-------------:|
-|   NO     |  6.40 ± 0.01  |
-|   YES    |  6.70 ± 0.01  |
+|   NO     |  6.40 ± 0.05  |
+|   YES    |  6.70 ± 0.05  |
     
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times. Zero step is
 to replace strcmp with memcmp, as we already have length of each string.
 
 | Comparator | Exec. Time, s |
 |:----------:|:-------------:|
-|   strcmp   |  5.10 ± 0.01  |
-|   memcmp   |  4.50 ± 0.01   |
+|   strcmp   |  5.10 ± 0.05  |
+|   memcmp   |  4.50 ± 0.05  |
 Now we need to replace memcmp for short words with AVX instruction to compare multiple
 bytes at once.
 
@@ -139,15 +139,15 @@ This is a success! Performance imroved almost 1.5 times:
 
 | Intrinsics | Exec. Time, s |
 |:----------:|:-------------:|
-|    NO      |     4.500     |
-|    YES     |     2.900     |
+|    NO      |  4.50 ± 0.05  |
+|    YES     |  2.90 ± 0.05  |
     
 * Another attempt on changing the hash function: Use intrinsics CRC32 hash.
 
 | Intrinsics hash | Exec. Time, s |
 |:---------------:|:-------------:|
-|      NO         |     2.900     |
-|      YES        |     2.400     |
+|      NO         |  2.90 ± 0.05  |
+|      YES        |  2.40 ± 0.05  |
     
   
 This was the last optimization so far. Let us sum up.
