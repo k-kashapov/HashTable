@@ -101,15 +101,15 @@ Making it inline impacted slightly overall performance. Table of the ```main``` 
 
 | Inline? | Instructions, Bil  | Exec. Time, s |
 |:-------:|:------------------:|:-------------:|
-|   NO    |         2.7        |     5.170     |
-|   YES   |         3.0        |     5.070     |
+|   NO    |         2.7        |  5.17 ± 0.01  |
+|   YES   |         3.0        |  5.07 ± 0.01  |
 
 * The next function to optimize was MurmurHash. We tried using djb2 hash function instead of Murmur. The amount of instructions executed was reduced. However, overall execution time suffered from this:
 
 | Hash Function | Instructions, Mil | Exec. Time, s |
 |:-------------:|:-----------------:|:-------------:|
-|    Murmur     |        780        |     5.100     |
-|    djb2       |        690        |     7.900     |
+|    Murmur     |        780        |  5.10 ± 0.01  |
+|    djb2       |        690        |  7.90 ± 0.01  |
 
 <img src="https://user-images.githubusercontent.com/52855633/165120395-f061d32a-b027-4bf7-abe2-f713c9570680.png" width = 50%>
 
@@ -122,17 +122,16 @@ However, this did only reduce the performance of the program:
 
 | Assembly | Exec. Time, s |
 |:--------:|:-------------:|
-|   NO     |     6.400     |
-|   YES    |     6.700     |
+|   NO     |  6.40 ± 0.01  |
+|   YES    |  6.70 ± 0.01  |
     
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times. Zero step is
 to replace strcmp with memcmp, as we already have length of each string.
 
 | Comparator | Exec. Time, s |
 |:----------:|:-------------:|
-|   strcmp   |     5.100     |
-|   memcmp   |     4.500     |
-
+|   strcmp   |  5.10 ± 0.01  |
+|   memcmp   |  4.50 ± 0.01   |
 Now we need to replace memcmp for short words with AVX instruction to compare multiple
 bytes at once.
 
