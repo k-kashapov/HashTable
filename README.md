@@ -186,7 +186,7 @@ This was the last optimization so far. Let us sum up.
 * Implementing parallel memcmp made it 2 times faster.
 * Finaly, replacing Murmur Hash with parallel CRC32 made our program 18% faster.
 
-<img src="https://user-images.githubusercontent.com/52855633/168486745-abf0770a-2c6d-4d58-bea1-1998479ac6bd.png" widht = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168489325-3f117c8a-9e16-4a58-bdba-bb75767f4d49.png" width = 70%>
 
 * Overall speedup: 2.2x times
     
