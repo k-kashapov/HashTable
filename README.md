@@ -132,6 +132,7 @@ to replace strcmp with memcmp, as we already have length of each string.
 |:----------:|:-------------:|
 |   strcmp   |  5.10 ± 0.05  |
 |   memcmp   |  4.50 ± 0.05  |
+
 Now we need to replace memcmp for short words with AVX instruction to compare multiple
 bytes at once.
 
