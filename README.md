@@ -105,12 +105,10 @@ We have found that the prologue of the TableFind function requires significant t
 
 Inlining the function gave almost no performance boost, but removed the function from the top of callgrind output. Table of the ```main``` function performance:
 
-| Inline? | Instructions, Bil  | Exec. Time, s |
-|:-------:|:------------------:|:-------------:|
-|   NO    |         2.7        |  5.17 ± 0.2   |
-|   YES   |         3.0        |  5.07 ± 0.2   |
-
-### Note: Although the number of instuctions has increased, the execution time is better.
+| Inline? |   Period, Mil. cycles   | Exec. Time, s |
+|:-------:|:-----------------------:|:-------------:|
+|   NO    |                         |  5.17 ± 0.2   |
+|   YES   |                         |  5.07 ± 0.2   |
 
 ## Hash optimization
 * The next function to optimize was Hash function.
@@ -118,10 +116,10 @@ Inlining the function gave almost no performance boost, but removed the function
 We have tried to improve execution time by rewriting MurmurHash in Assembly language.
 However, this did only reduce the performance of the program:
 
-| Assembly | Exec. Time, s |
-|:--------:|:-------------:|
-|   NO     |   6.40 ± 0.2  |
-|   YES    |   6.70 ± 0.2  |
+| Assembly |    Period, Mil. cycles    | Exec. Time, s |
+|:--------:|:-------------------------:|:-------------:|
+|   NO     |                           |   6.40 ± 0.2  |
+|   YES    |                           |   6.70 ± 0.2  |
 
 ## StrCmp optimizations
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times.
