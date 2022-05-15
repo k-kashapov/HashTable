@@ -90,12 +90,7 @@ Peformance test were conducted using the ```Callgrind``` tool, ```perf``` and Li
 * Judging by the ```perf``` output, the slowest function was TableFind itself, as it
 does a lot of safety checks in runtime. So we have decided to optimize it first.
 
-The first step was to reduce the number of conditional jumps as they are highly inefficient.
-This was done by replacing conditional jumps with conditional moves.
-
-This reduced the number of cycles TableFind is executed from 1.6 Bil to 800 Mil.
-
-After this, we have found that the prologue of the TableFind function requires significant time. So the next step to optimize it was making this function inline.
+We have found that the prologue of the TableFind function requires significant time. So the first step is to make this function inline.
 
 <img src="https://user-images.githubusercontent.com/52855633/168487189-b3dc61a0-fa07-42e2-98f0-48835ada5e79.png" width = 50%>
 
