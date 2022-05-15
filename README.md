@@ -99,12 +99,12 @@ After this, we have found that the prologue of the TableFind function requires s
 
 <img src="https://user-images.githubusercontent.com/52855633/168487189-b3dc61a0-fa07-42e2-98f0-48835ada5e79.png" width = 50%>
 
-Inlining the function gave slight performance boost and removed it from the top of callgrind output. Table of the ```main``` function performance:
+Inlining the function gave almost no performance boost, but removed the function from the top of callgrind output. Table of the ```main``` function performance:
 
 | Inline? | Instructions, Bil  | Exec. Time, s |
 |:-------:|:------------------:|:-------------:|
-|   NO    |         2.7        |  5.17 ± 0.05  |
-|   YES   |         3.0        |  5.07 ± 0.05  |
+|   NO    |         2.7        |  5.17 ± 0.2   |
+|   YES   |         3.0        |  5.07 ± 0.2   |
 
 ### Note: Although the number of cycles has increased, the execution time is better.
 
@@ -113,8 +113,8 @@ Inlining the function gave slight performance boost and removed it from the top 
 
 | Hash Function | Instructions, Mil | Exec. Time, s |
 |:-------------:|:-----------------:|:-------------:|
-|    Murmur     |        780        |  5.10 ± 0.05  |
-|    djb2       |        690        |  7.90 ± 0.05  |
+|    Murmur     |        780        |  5.10 ± 0.2   |
+|    djb2       |        690        |  7.90 ± 0.2   |
 
 ```MurmurHash``` Callgrind output:
 
@@ -131,8 +131,8 @@ However, this did only reduce the performance of the program:
 
 | Assembly | Exec. Time, s |
 |:--------:|:-------------:|
-|   NO     |  6.40 ± 0.05  |
-|   YES    |  6.70 ± 0.05  |
+|   NO     |   6.40 ± 0.2  |
+|   YES    |   6.70 ± 0.2  |
 
 ## StrCmp optimizations
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times.
@@ -145,8 +145,8 @@ Zero step is to replace strcmp with memcmp, as we already have length of each st
 
 | Comparator | Exec. Time, s |
 |:----------:|:-------------:|
-|   strcmp   |  5.10 ± 0.05  |
-|   memcmp   |  4.50 ± 0.05  |
+|   strcmp   |  5.10 ± 0.2   |
+|   memcmp   |  4.50 ± 0.2   |
 
 Now we need to replace memcmp for short words with AVX instruction to compare multiple
 bytes at once.
@@ -155,16 +155,16 @@ This is a success! Performance imroved almost 1.5 times:
 
 | Intrinsics | Exec. Time, s |
 |:----------:|:-------------:|
-|    NO      |  4.50 ± 0.05  |
-|    YES     |  2.90 ± 0.05  |
+|    NO      |  4.50 ± 0.2   |
+|    YES     |  2.90 ± 0.2   |
     
 ## One mode Hash optimization attempt
 * Another attempt on changing the hash function: Use intrinsics CRC32 hash.
 
 | Intrinsics hash | Exec. Time, s |
 |:---------------:|:-------------:|
-|      NO         |  2.90 ± 0.05  |
-|      YES        |  2.40 ± 0.05  |
+|      NO         |  2.90 ± 0.2   |
+|      YES        |  2.40 ± 0.2   |
 
 Intrinsics Hash gave 13% performance boost.
 
@@ -175,8 +175,8 @@ We have tried to optimize it, by replacing it with macro. However, it gave no pe
 
 |      Macro      | Exec. Time, s |
 |:---------------:|:-------------:|
-|      NO         |  2.40 ± 0.05  |
-|      YES        |  2.40 ± 0.05  |
+|      NO         |  2.40 ± 0.2   |
+|      YES        |  2.40 ± 0.2   |
 
 This was the last optimization so far. Let us sum up.
 
