@@ -19,12 +19,12 @@ The first part of the task was to check the uniformity of several hash functions
 2) Hash = First symbol of the string
 3) Sum of symbols' ASCII codes
 4) ROL hash: ```Hash[i + 1] = (Hash[i] ROL 1) ^ String[i + 1]```
-5) MurmurHash2A
-6) CRC32 Hash
+5) [MurmurHash2A](https://ru.wikipedia.org/wiki/MurmurHash2)
+6) [CRC32 Hash](https://wiki.osdev.org/CRC32)
 
-To test the function, we have hashed the entire Silmarillion by J.R. Tolkien word by word.
-Diagrams of Hash collisions were plotted. Amount of collisions of value H = length of the List, associated with hash value H.
-Chi-squared test was performed to estimate the uniformity quantitively.
+To test the function, we have hashed the entire [Silmarillion by J.R. Tolkien](https://en.wikipedia.org/wiki/The_Silmarillion) word by word.
+Diagrams of Hash collisions were plotted. Amount of collisions of value ```H``` = length of the List, associated with hash value ```H```.
+Chi-squared (more on that later) test was performed to estimate the uniformity quantitively.
 
 # Experimental results:
 
@@ -93,7 +93,7 @@ That concludes our research.
 2) For each word of the book, call ```TableFind``` 512 times
 3) Erase the whole book from Table word by word
 
-Peformance test were conducted using the ```perf``` tool and Linux's ```time```. The number of cycles a function is executed and overall execution time are optimized. Optimization flag: ```-O2```.
+Peformance test were conducted using the [```perf```](https://perf.wiki.kernel.org/index.php/Tutorial) tool and Linux's ```time```. The number of cycles a function is executed and overall execution time are optimized. Optimization flag: ```-O2```.
 
 ## TableFind optimization
 * Judging by the ```perf``` output, the slowest function was TableFind itself, as it
@@ -181,7 +181,6 @@ Intrinsics Hash gave 6% performance boost.
 Such small gain can be explained by the fact that hash function is not the bottleneck.
 
 ## StrCmp optimizations
-* At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times.
 
 From the following screenshot we can see, that the most time-consuming part of the ListFind function is the ```strcmp```.
 
@@ -199,26 +198,32 @@ bytes at once.
 
 The results are surprisingly good! Performance has been improved by almost 30%:
 
-| Intrinsics |    Period, Mil. cycles    | Exec. Time, s |
-|:----------:|:-------------------------:|:-------------:|
-|    NO      |                           |  2.60 ± 0.02  |
-|    YES     |                           |  2.12 ± 0.02  |
+<img src = "https://user-images.githubusercontent.com/52855633/168509254-585cb4d8-3d26-4c57-bf2d-6967482d491d.png" width = 70%>
+
+| Intrinsics memcmp |    Period, Mil. cycles    | Exec. Time, s |
+|:-----------------:|:-------------------------:|:-------------:|
+|        NO         |           2.1             |  2.60 ± 0.02  |
+|        YES        |           2.9             |  2.12 ± 0.02  |
+
+Note: once again, CPU cycles do not corellate with overall performance trend.
 
 This was the last optimization so far. Let us sum up.
 
 # Optimization summary
 
 * ```perf``` killed my processor several times. It was very scary...
-* Inlining a function gave us 2% performance boost.
+* Inlining a function gave us a barely noticable 2% performance boost.
 * Changing the Hash function as well as implementing it in ASM decreases the computation speed.
-* Replacing strncmp with memcmp is a 13% boost.
-* Implementing parallel memcmp made it 2 times faster.
-* Finaly, replacing Murmur Hash with parallel CRC32 made our program 18% faster.
+* Replacing Murmur Hash with parallel CRC32 made our program 6% faster.
+* Finaly, implementing parallel memcmp made it almost 1.3 times faster.
 
-<img src="https://user-images.githubusercontent.com/52855633/168489325-3f117c8a-9e16-4a58-bdba-bb75767f4d49.png" width = 70%>
-
-* Overall speedup: 2.2x times
+* Overall speedup: 1.56x times
     
 ## Optimization coefficient
 As a part of our course we were recommended to count the following value:
-* 2.2 times performance boost / 113 lines of assembly and SIMD code * 1000 = 18.8
+* 1.56 times performance boost / 113 lines of assembly and SIMD code * 1000 = 13.8
+
+# Acknowledgements
+
+Big thanks to [futherus](https://github.com/futherus), [Denchik](https://github.com/d3phys) and [Vasilmao](https://github.com/vasilmao) for reviewing my README file.
+I would also like to express my gratitude to the entire development team of ```perf```.
