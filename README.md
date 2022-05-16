@@ -8,8 +8,8 @@ AVX instructions are used for performance boost.
 The Hash Table itself does not provide any hashing functions. A few of them are implemented in Hashing.cpp. The Table expects a hashing function to be
 ```int64_t Hash (const void *key, int key_len)```
 
-Init the table with ```Hash_t [name] = {};```
-Then use a constructor to prepare it properly;
+Init the table with ```Hash_t table = {};```
+Then use a constructor to prepare it properly.
 
 # Uniformity test
 
@@ -26,7 +26,7 @@ To test the function, we have hashed the entire [Silmarillion by J.R. Tolkien](h
 Diagrams of Hash collisions were plotted. Amount of collisions of value ```H``` = length of the List, associated with hash value ```H```.
 Chi-squared (more on that later) test was performed to estimate the uniformity quantitively.
 
-# Experimental results:
+# Experimental results
 
 ## 1) String length hash
 
