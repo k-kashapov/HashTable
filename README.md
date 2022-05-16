@@ -112,9 +112,16 @@ Inlining the function gave almost no performance boost, but removed the function
 
 After inlining:
 
-<img src="https://user-images.githubusercontent.com/52855633/168499750-20edc128-2813-4574-81bf-1b9cd816efd0.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168499995-9b32e464-4e26-44b2-ac6e-c92efe973666.png" width = 50%>
 
 ```CPU cycles for TableFind = Δ(cycles for StressTest)```, because they now form a single function.
+
+## StressTest optimization
+* The heaviest function is the StressTest, as it contains TableFind. Using ```perf```, we find out the most expensive part of this function is GetElemByHash, because it is called whenever a key is processed.
+
+Our solution is to replace it with macro.
+
+
 
 ## Hash optimization
 * The next function to optimize was Hash function.
