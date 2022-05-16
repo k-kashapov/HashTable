@@ -213,7 +213,7 @@ Note: once again, CPU cycles do not corellate with overall performance trend.
 
 # Inline ASM optimization
 
-As a part of our course we were recommended to use inline ```__asm``` feature.
+As a part of our course we were recommended to use inline ```__asm``` feature. This does not improve the execution speed. Education purposes only.
 
 ```
 if (target_list->size > 1)
