@@ -95,6 +95,10 @@ That concludes our research.
 
 Peformance test were conducted using the [```perf```](https://perf.wiki.kernel.org/index.php/Tutorial) tool and Linux's ```time```. The number of cycles a function is executed and overall execution time are optimized. Optimization flag: ```-O2```.
 
+In every measurement:
+* Period     - approximate number of total CPU cycles a function has been executed. Output of ```perf```.
+* Exec. Time - total time required to pass the stress test. Output of ```time```.
+
 ## TableFind optimization
 * Judging by the ```perf``` output, the slowest function was TableFind itself, as it
 does a lot of safety checks in runtime. So we have decided to optimize it first.
