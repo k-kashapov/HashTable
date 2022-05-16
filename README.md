@@ -80,7 +80,7 @@ Where
 
 ### Results
 
-<img src="https://user-images.githubusercontent.com/52855633/168494851-3ce246a2-e7b0-400a-a2eb-0b269664681b.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168494851-3ce246a2-e7b0-400a-a2eb-0b269664681b.png" width = 70%>
 
 CRC32 and MurmurHash are the most uniform hashes with values 1.06 and 1.07 respectively.
 
@@ -101,7 +101,7 @@ does a lot of safety checks in runtime. So we have decided to optimize it first.
 
 We have found that the prologue of the TableFind function requires significant time. So the first step is to make this function inline.
 
-<img src="https://user-images.githubusercontent.com/52855633/168487189-b3dc61a0-fa07-42e2-98f0-48835ada5e79.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168487189-b3dc61a0-fa07-42e2-98f0-48835ada5e79.png" width = 70%>
 
 Inlining the function gave slight performance boost, but removed the function from the top of callgrind output. Table of the ```main``` function performance:
 
@@ -112,18 +112,18 @@ Inlining the function gave slight performance boost, but removed the function fr
 
 After inlining:
 
-<img src="https://user-images.githubusercontent.com/52855633/168499995-9b32e464-4e26-44b2-ac6e-c92efe973666.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168499995-9b32e464-4e26-44b2-ac6e-c92efe973666.png" width = 70%>
 
 ```CPU cycles for TableFind = Δ(cycles for StressTest)```, because they now form a single function.
 
 ## StressTest optimization
 * The heaviest function is the StressTest, as it contains TableFind. Using ```perf```, we find out the most expensive part of this function is GetElemByHash, because it is called whenever a key is processed.
 
-<img src="https://user-images.githubusercontent.com/52855633/168504447-34be53c4-1b42-4c2c-9895-8cf17167e541.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168504447-34be53c4-1b42-4c2c-9895-8cf17167e541.png" width = 70%>
 
 Our solution is to replace it with macro. However, it gives very little performance boost.
 
-<img src="https://user-images.githubusercontent.com/52855633/168504481-045199f4-6410-40fc-9801-b74d95e43656.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168504481-045199f4-6410-40fc-9801-b74d95e43656.png" width = 70%>
 
 |      Macro      |   Period, Bil. cycles   | Exec. Time, s |
 |:---------------:|:-----------------------:|:-------------:|
@@ -141,7 +141,7 @@ We will now try to optimize the second most heavy function: Hash.
 We have tried to improve execution time by rewriting MurmurHash in Assembly language.
 However, this did only reduce the performance of the program:
 
-<img src="https://user-images.githubusercontent.com/52855633/168504759-e5ee229c-9ddc-4157-a432-f8711c04ee07.png" width = 50%>
+<img src="https://user-images.githubusercontent.com/52855633/168504759-e5ee229c-9ddc-4157-a432-f8711c04ee07.png" width = 70%>
 
 | Assembly |    Period, Mil. cycles    | Exec. Time, s |
 |:--------:|:-------------------------:|:-------------:|
@@ -150,14 +150,16 @@ However, this did only reduce the performance of the program:
 
 * Another attempt on changing the hash function: Use intrinsics CRC32 hash.
 
-<img src="https://user-images.githubusercontent.com/52855633/168505485-8bf9fc1f-4795-4526-a2d9-d3b466c7e8bb.png" width=50%>
+<img src="https://user-images.githubusercontent.com/52855633/168505485-8bf9fc1f-4795-4526-a2d9-d3b466c7e8bb.png" width=70%>
 
 | Intrinsics hash |    Period, Mil. cycles    | Exec. Time, s |
 |:---------------:|:-------------------------:|:-------------:|
 |      NO         |            2.4            |   2.87 ± 0.08 |
 |      YES        |            1.2            |   2.72 ± 0.01 |
 
-Intrinsics Hash gave 13% performance boost.
+Intrinsics Hash gave 6% performance boost.
+
+Such small gain can be explained by the fact that hash function is not the bottleneck.
 
 ## StrCmp optimizations
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times.
