@@ -211,6 +211,32 @@ The results are surprisingly good! Performance has been improved by almost 30%:
 
 Note: once again, CPU cycles do not corellate with overall performance trend.
 
+# Inline ASM optimization
+
+As a part of our course we were recommended to use inline ```__asm``` feature.
+
+```
+if (target_list->size > 1)
+{
+    long res_elem = ListFind (target_list, type_t { 0, key, key_len });
+            
+    if (res_elem) found = GET_LIST_DATA (target_list, res_elem);
+}
+```
+
+Has been replaced with
+
+```
+__asm__ ("cmp $1, %0\n"
+         "jle EmptyList\n"
+         :: "r" (target_list->size));
+
+            long res_elem = ListFind (target_list, type_t { 0, key, key_len });
+            if (res_elem) found = GET_LIST_DATA (target_list, res_elem);
+            
+__asm__ ("EmptyList:\n" ::);
+```
+
 This was the last optimization so far. Let us sum up.
 
 # Optimization summary
