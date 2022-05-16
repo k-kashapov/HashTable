@@ -225,5 +225,5 @@ As a part of our course we were recommended to count the following value:
 
 # Acknowledgements
 
-Big thanks to [futherus](https://github.com/futherus), [Denchik](https://github.com/d3phys) and [Vasilmao](https://github.com/vasilmao) for reviewing my README file.
+Big thanks to [Futherus](https://github.com/futherus), [Denchik](https://github.com/d3phys) and [Vasilmao](https://github.com/vasilmao) for reviewing my README file.
 I would also like to express my gratitude to the entire development team of ```perf```.
