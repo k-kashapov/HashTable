@@ -237,6 +237,11 @@ __asm__ ("cmp $1, %0\n"
 __asm__ ("EmptyList:\n" ::);
 ```
 
+| Inline ASM | Exec. Time, s |
+|:----------:|:-------------:|
+|     NO     |   3.50 ± 0.2  |
+|     YES    |   3.57 ± 0.2  |
+
 This was the last optimization so far. Let us sum up.
 
 # Optimization summary
