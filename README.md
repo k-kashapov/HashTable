@@ -103,12 +103,12 @@ We have found that the prologue of the TableFind function requires significant t
 
 <img src="https://user-images.githubusercontent.com/52855633/168487189-b3dc61a0-fa07-42e2-98f0-48835ada5e79.png" width = 50%>
 
-Inlining the function gave almost no performance boost, but removed the function from the top of callgrind output. Table of the ```main``` function performance:
+Inlining the function gave slight performance boost, but removed the function from the top of callgrind output. Table of the ```main``` function performance:
 
 | Inline? |   Period, Bil. cycles   | Exec. Time, s |
 |:-------:|:-----------------------:|:-------------:|
-|   NO    |          5.6            |  5.17 ± 0.2   |
-|   YES   |          4.4            |  5.07 ± 0.2   |
+|   NO    |          5.6            |  3.31 ± 0.05  |
+|   YES   |          4.4            |  3.03 ± 0.05  |
 
 After inlining:
 
@@ -119,9 +119,19 @@ After inlining:
 ## StressTest optimization
 * The heaviest function is the StressTest, as it contains TableFind. Using ```perf```, we find out the most expensive part of this function is GetElemByHash, because it is called whenever a key is processed.
 
-Our solution is to replace it with macro.
+Our solution is to replace it with macro. However, it gives very little performance boost.
 
+<img src="https://user-images.githubusercontent.com/52855633/168489148-dd0af343-7394-445e-b4c2-fbdda554e4a5.png" width = 50%>
 
+|      Macro      |   Period, Bil. cycles   | Exec. Time, s |
+|:---------------:|:-----------------------:|:-------------:|
+|      NO         |           4.4           |  2.90 ± 0.08  |
+|      YES        |           4.8           |  2.87 ± 0.05  |
+
+Note: although the total amount of cycles is increased, execution time benefitted from the optimiztion.
+
+At the current step we cannot find any improvements that could be done to speed up the TableFind function.
+We will now try to optimize the second most heavy function: Hash.
 
 ## Hash optimization
 * The next function to optimize was Hash function.
@@ -131,8 +141,8 @@ However, this did only reduce the performance of the program:
 
 | Assembly |    Period, Mil. cycles    | Exec. Time, s |
 |:--------:|:-------------------------:|:-------------:|
-|   NO     |                           |   6.40 ± 0.2  |
-|   YES    |                           |   6.70 ± 0.2  |
+|   NO     |           4.8             |   2.87 ± 0.08 |
+|   YES    |                           |   3.45 ± 0.01 |
 
 ## StrCmp optimizations
 * At the time, we tried to optimize the second most heavy function: List Find. It is slow as it uses strncmp too many times.
@@ -167,16 +177,6 @@ This is a success! Performance imroved almost 1.5 times:
 |      YES        |  2.40 ± 0.2   |
 
 Intrinsics Hash gave 13% performance boost.
-
-* The next function to optimize is GetElemByHash.
-We have tried to optimize it, by replacing it with macro. However, it gave no performance boost.
-
-![get_elem](https://user-images.githubusercontent.com/52855633/168489148-dd0af343-7394-445e-b4c2-fbdda554e4a5.png)
-
-|      Macro      | Exec. Time, s |
-|:---------------:|:-------------:|
-|      NO         |  2.40 ± 0.2   |
-|      YES        |  2.40 ± 0.2   |
 
 This was the last optimization so far. Let us sum up.
 
