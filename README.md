@@ -121,7 +121,26 @@ After inlining:
 
 <img src="https://user-images.githubusercontent.com/52855633/168504447-34be53c4-1b42-4c2c-9895-8cf17167e541.png" width = 70%>
 
-Our solution is to replace it with macro. However, it gives very little performance boost.
+Our solution is to replace it with macro. 
+
+```
+void *GetElemByHash (Hash_t *target_table, int64_t hash)
+{
+    int64_t capacity_mask = target_table->capacity - 1;
+
+    void *target_elem = target_table->Data[hash & capacity_mask];
+
+    return target_elem;
+}
+```
+
+Was replaced with
+
+```
+#define GET_ELEM_BY_HASH(tbl_, hash_) (tbl_->Data[hash_ & (tbl_->capacity - 1)])
+```
+
+However, it gives very little performance boost.
 
 <img src="https://user-images.githubusercontent.com/52855633/168504481-045199f4-6410-40fc-9801-b74d95e43656.png" width = 70%>
 
@@ -138,7 +157,7 @@ We will now try to optimize the second most heavy function: Hash.
 ## Hash optimization
 * The next function to optimize was Hash function.
 
-We have tried to improve execution time by rewriting MurmurHash in Assembly language.
+We have tried to improve execution time by rewriting [MurmurHash in Assembly language](https://github.com/k-kashapov/HashTable/blob/master/src/MurmurHash.s).
 However, this did only reduce the performance of the program:
 
 <img src="https://user-images.githubusercontent.com/52855633/168504759-e5ee229c-9ddc-4157-a432-f8711c04ee07.png" width = 70%>
@@ -148,7 +167,7 @@ However, this did only reduce the performance of the program:
 |   NO     |           4.8             |   2.87 ± 0.08 |
 |   YES    |           6.2             |   3.45 ± 0.01 |
 
-* Another attempt on changing the hash function: Use intrinsics CRC32 hash.
+* Another attempt on changing the hash function: Use [intrinsics CRC32 hash](https://github.com/k-kashapov/HashTable/blob/90f8478caadbb8fe4d78167d040d2f1136544fd5/src/Hashing.cpp#L190).
 
 <img src="https://user-images.githubusercontent.com/52855633/168505485-8bf9fc1f-4795-4526-a2d9-d3b466c7e8bb.png" width=70%>
 
