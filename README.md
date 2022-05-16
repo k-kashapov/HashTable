@@ -93,7 +93,7 @@ That concludes our research.
 2) For each word of the book, call ```TableFind``` 512 times
 3) Erase the whole book from Table word by word
 
-Peformance test were conducted using the ```perf``` tool and Linux's ```time```. The number of cycles a function is executed and overall execution time are optimized.
+Peformance test were conducted using the ```perf``` tool and Linux's ```time```. The number of cycles a function is executed and overall execution time are optimized. Optimization flag: ```-O2```.
 
 ## TableFind optimization
 * Judging by the ```perf``` output, the slowest function was TableFind itself, as it
@@ -191,24 +191,24 @@ Zero step is to replace strcmp with memcmp, as we already have length of each st
 
 | Comparator | Exec. Time, s |
 |:----------:|:-------------:|
-|   strcmp   |  5.10 ± 0.2   |
-|   memcmp   |  4.50 ± 0.2   |
+|   strcmp   |  2.72 ± 0.01  |
+|   memcmp   |  2.60 ± 0.02  |
 
 Now we need to replace memcmp for short words with AVX instruction to compare multiple
 bytes at once.
 
-This is a success! Performance imroved almost 1.5 times:
+The results are surprisingly good! Performance has been improved by almost 30%:
 
-| Intrinsics | Exec. Time, s |
-|:----------:|:-------------:|
-|    NO      |  4.50 ± 0.2   |
-|    YES     |  2.90 ± 0.2   |
+| Intrinsics |    Period, Mil. cycles    | Exec. Time, s |
+|:----------:|:-------------------------:|:-------------:|
+|    NO      |                           |  2.60 ± 0.02  |
+|    YES     |                           |  2.12 ± 0.02  |
 
 This was the last optimization so far. Let us sum up.
 
 # Optimization summary
 
-* ```perf``` killed my processor once. It was very scary...
+* ```perf``` killed my processor several times. It was very scary...
 * Inlining a function gave us 2% performance boost.
 * Changing the Hash function as well as implementing it in ASM decreases the computation speed.
 * Replacing strncmp with memcmp is a 13% boost.
