@@ -8,8 +8,22 @@ AVX instructions are used for performance boost.
 The Hash Table itself does not provide any hashing functions. A few of them are implemented in Hashing.cpp. The Table expects a hashing function to be
 ```int64_t Hash (const void *key, int key_len)```
 
+We have a typedef for this function:
+
+```typedef int64_t (* HFunc_t) (const void *, int);```
+
 Init the table with ```Hash_t table = {};```
-Then use a constructor to prepare it properly.
+
+Then use a constructor to prepare it properly:
+
+``` CreateTable (&table, table_len); ```
+
+Use ```TableInsert (Hash_t *table, type_t value, HFunc_t Hash)``` to add elements.
+
+Use ```TableDelete (Hash_t *target_table, const void *key, int key_len, HFunc_t UserHash)``` to delete elements from the table.
+
+Use ```DestrTable (Hash_t *table, int (*elemDtor) (void *))``` to destroy the table.
+Function passed as argument is a destructor for table elements in case they are some kind of data structures.
 
 # Uniformity test
 
